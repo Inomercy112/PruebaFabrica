@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import ModalUsuario from "./ModalUsuario";
 
 export default function Usuarios() {
-
     const [usuarios, setUsuarios] = useState<any[]>([]);
+    const [openForm, setOpenForm] = useState(false);
     useEffect( ()=>{
         const cargarUsuarios = async() =>{
             try{
@@ -28,6 +29,10 @@ export default function Usuarios() {
     }, []);
 
     return (
+        <>
+        <button onClick={() => setOpenForm(true)}>Nuevo Usuario</button>
+        <ModalUsuario open={openForm} setOpen={setOpenForm} />
+
         <div className="bg-white p-6 rounded-lg shadow">
             <h2 className="text-2xl font-bold mb-4">Usuarios</h2>
 
@@ -37,11 +42,12 @@ export default function Usuarios() {
                 <ul className="space-y-2">
                     {usuarios.map((usuario, index) => (
                         <li key={index} className="p-2 border rounded">
-                            {usuario.nombre} - {usuario.email}
+                            {usuario.nombreDto} - {usuario.correoDto}
                         </li>
                     ))}
                 </ul>
             )}
         </div>
+        </>
     );
 }
