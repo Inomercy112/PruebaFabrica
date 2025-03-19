@@ -66,6 +66,7 @@ export default function ModalUsuario({ open, setOpen }: UsuarioFormProps) {
 
             alert("Usuario creado correctamente");
             setOpen(false);
+            
         } catch (error) {
             console.error("Error al crear el usuario:", error);
             alert("Hubo un error al enviar los datos.");

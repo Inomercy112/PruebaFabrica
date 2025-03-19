@@ -124,8 +124,10 @@ export default function Usuarios() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {usuariosFiltrados.map((usuario) => (
                         <div key={usuario.idDto} className="p-4 border rounded-lg shadow-sm flex flex-col">
-                            <span className="font-semibold">{usuario.nombreDto}</span>
+                            <span className="font-semibold">{usuario.nombreDto} {usuario.apellidoDto}</span>
                             <span className="text-gray-500 text-sm">{usuario.correoDto}</span>
+                            <span className="text-gray-500 text-sm">{usuario.rolDto.nombreRol}</span>
+
                             <div className="flex gap-2 mt-2">
                                 <Button color="info" size="xs" onClick={() => handleOpenUpdate(usuario)}>
                                     <HiEye className="w-4 h-4 mr-1" /> Ver

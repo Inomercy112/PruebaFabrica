@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { HiEye, HiPlus, HiXCircle, HiUserAdd } from "react-icons/hi";
 import ModalProyecto from "./ModalProyecto";
 import ModalActualizarProyecto from "./ModalProyectoActualizar";
-import ModalAsignarUsuario from "./ModalAsignarUsuario";
-import ModalAsignarEtapa from "./ModalAsignarEtapa";
 
 interface Proyecto {
     idDto: number;
@@ -18,6 +16,7 @@ interface Proyecto {
     diaInicioDto: string;
     diaFinDto: string;
 }
+
 interface Usuario {
     idDto: number;
     nombreDto: string;
@@ -26,48 +25,44 @@ interface Usuario {
         idDto: number;
     };
 }
-interface Etapa {
-    idDto: number;
-    nombreEtapaDto: string;
-    descripcionEtapaDto: string;
-    estadoDto: number;
-}
 
 export default function Proyectos() {
     const [proyectos, setProyectos] = useState<Proyecto[]>([]);
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-    const [etapas, setEtapas] = useState<Etapa[]>([]);
     const [search, setSearch] = useState("");
     const [openForm, setOpenForm] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [openConfirm, setOpenConfirm] = useState(false);
     const [openAssign, setOpenAssign] = useState(false);
-    const [openAssignEtapa, setOpenAssignEtapa] = useState(false);
     const [selectedProyecto, setSelectedProyecto] = useState<Proyecto | null>(null);
     const [selectedUsuario, setSelectedUsuario] = useState<number | null>(null);
-    const [selectedEtapa, setSelectedEtapa] = useState<number | null>(null);
+
     useEffect(() => {
         cargarProyectos();
     }, []);
 
     const cargarProyectos = async () => {
-        const response = await fetch("http://localhost:8080/proyecto/Consultar");
-        const data = await response.json();
-        setProyectos(data);
+        try {
+            const response = await fetch("http://localhost:8080/proyecto/Consultar");
+            const data = await response.json();
+            setProyectos(data);
+        } catch (error) {
+            console.error("Error al cargar proyectos:", error);
+        }
     };
 
     const cargarUsuarios = async () => {
-        const response = await fetch("http://localhost:8080/usuario/Consultar");
-        const data = await response.json();
-        setUsuarios(data);
+        try {
+            const response = await fetch("http://localhost:8080/usuario/Consultar");
+            const data = await response.json();
+            const usuariosFiltrados = data.filter((usuario: Usuario) =>
+                usuario.rolDto.idDto === 2 || usuario.rolDto.idDto === 3
+            );
+            setUsuarios(usuariosFiltrados);
+        } catch (error) {
+            console.error("Error al cargar usuarios:", error);
+        }
     };
-
-    const cargarEtapas = async () => {
-        const response = await fetch("http://localhost:8080/etapa/Consultar");
-        const data = await response.json();
-        setEtapas(data);
-    };
-
 
     const handleOpenUpdate = (proyecto: Proyecto) => {
         setSelectedProyecto(proyecto);
@@ -85,43 +80,30 @@ export default function Proyectos() {
         cargarUsuarios();
     };
 
-    const handleOpenAssignEtapa = (proyecto: Proyecto) => {
-        setSelectedProyecto(proyecto);
-        setOpenAssignEtapa(true);
-        cargarEtapas();
-    };
-
-    const handleDesactivarProyecto = async () => {
-        if (!selectedProyecto) return;
+    const handleAssignWorker = async () => {
+        if (!selectedProyecto || selectedUsuario === null) return;
 
         try {
-            const proyectoActualizado = {
-                ...selectedProyecto,
-                estadoDto: 2,
-                estadoProyectoDto: { idDto: 5, nombreEstadoDto: "desactivado" },
-            };
-
-            const response = await fetch(`http://localhost:8080/proyecto/Actualizar/${selectedProyecto.idDto}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(proyectoActualizado),
-            });
-
-            if (!response.ok) throw new Error(`Error al desactivar proyecto: ${response.status}`);
-
-            setProyectos((prev) =>
-                prev.map((p) => (p.idDto === selectedProyecto.idDto ? proyectoActualizado : p))
+            const response = await fetch(
+                `http://localhost:8080/usuarioProyecto/Registrar/${selectedProyecto.idDto}/${selectedUsuario}`,
+                {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                }
             );
 
-            alert("Proyecto desactivado correctamente");
-            setOpenConfirm(false);
+            if (!response.ok) throw new Error(`Error al asignar usuario: ${response.status}`);
+
+            alert("Usuario asignado correctamente");
+            setOpenAssign(false);
+            cargarProyectos();
         } catch (error) {
-            console.error("Error al desactivar proyecto:", error);
-            alert("Error al desactivar el proyecto.");
+            console.error("Error al asignar usuario:", error);
+            alert("Error al asignar usuario al proyecto.");
         }
     };
 
-
+    // 🔹 Buscar proyectos por nombre
     const proyectosFiltrados = proyectos.filter((proyecto) =>
         proyecto.nombreDto.toLowerCase().includes(search.toLowerCase())
     );
@@ -157,12 +139,6 @@ export default function Proyectos() {
                         <div key={proyecto.idDto} className="p-4 border rounded-lg shadow-sm flex flex-col">
                             <span className="font-semibold">{proyecto.nombreDto}</span>
                             <span className="text-gray-500 text-sm">{proyecto.descripcionDto}</span>
-                            <span className="text-sm text-gray-700">
-                                Inicio: {proyecto.diaInicioDto} - Fin: {proyecto.diaFinDto}
-                            </span>
-                            <span className={`text-sm ${proyecto.estadoDto === 1 ? "text-green-600" : "text-red-600"}`}>
-                                Estado: {proyecto.estadoProyectoDto.nombreEstadoDto}
-                            </span>
                             <div className="flex gap-2 mt-2">
                                 <Button color="info" size="xs" onClick={() => handleOpenUpdate(proyecto)}>
                                     <HiEye className="w-4 h-4 mr-1" /> Ver
@@ -173,56 +149,41 @@ export default function Proyectos() {
                                 <Button color="success" size="xs" onClick={() => handleOpenAssign(proyecto)}>
                                     <HiUserAdd className="w-4 h-4 mr-1" /> Asignar Usuario
                                 </Button>
-                                <Button color="success" size="xs" onClick={() => handleOpenAssignEtapa(proyecto)}>
-                                    <HiUserAdd className="w-4 h-4 mr-1" /> Asignar Etapa
-                                </Button>
                             </div>
                         </div>
                     ))}
                 </div>
             )}
 
-            <Modal show={openConfirm} onClose={() => setOpenConfirm(false)} size="md" popup>
-                <Modal.Header />
+            {/* Modal de asignar usuario */}
+            <Modal show={openAssign} onClose={() => setOpenAssign(false)}>
+                <Modal.Header>Asignar Usuario al Proyecto</Modal.Header>
                 <Modal.Body>
-                    <div className="text-center">
-                        <HiXCircle className="mx-auto mb-4 w-12 h-12 text-red-600" />
-                        <h3 className="mb-5 text-sm sm:text-lg font-normal text-gray-500 dark:text-gray-400">
-                            ¿Estás seguro de que deseas desactivar el proyecto <strong>{selectedProyecto?.nombreDto}</strong>?
-                        </h3>
-                        <div className="flex flex-col sm:flex-row justify-center gap-4">
-                            <Button color="failure" onClick={handleDesactivarProyecto}>
-                                Sí, desactivar
-                            </Button>
-                            <Button color="gray" onClick={() => setOpenConfirm(false)}>
-                                Cancelar
-                            </Button>
-                        </div>
+                    <div className="space-y-4">
+                        <label className="block text-sm font-medium dark:text-white">Seleccionar Usuario</label>
+                        <select
+                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                            value={selectedUsuario ?? ""}
+                            onChange={(e) => setSelectedUsuario(Number(e.target.value))}
+                        >
+                            <option value="">Seleccione un usuario</option>
+                            {usuarios.map((usuario) => (
+                                <option key={usuario.idDto} value={usuario.idDto}>
+                                    {usuario.nombreDto} {usuario.apellidoDto}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </Modal.Body>
+                <Modal.Footer>
+                    <Button color="success" onClick={handleAssignWorker}>
+                        Asignar
+                    </Button>
+                    <Button color="gray" onClick={() => setOpenAssign(false)}>
+                        Cancelar
+                    </Button>
+                </Modal.Footer>
             </Modal>
-
-            <ModalAsignarUsuario
-                open={openAssign}
-                setOpen={setOpenAssign}
-                usuarios={usuarios}
-                selectedProyectoId={selectedProyecto?.idDto ?? null}
-                onUsuarioAsignado={cargarProyectos}
-            />
-
-            <ModalAsignarEtapa
-                open={openAssignEtapa}
-                setOpen={setOpenAssignEtapa}
-                etapas={etapas}
-                selectedProyectoId={selectedProyecto?.idDto ?? null}
-                onEtapaAsignada={cargarProyectos}
-            />
-
-
-            <ModalProyecto open={openForm} setOpen={setOpenForm} onProyectoCreado={cargarProyectos} />
-            {selectedProyecto && (
-                <ModalActualizarProyecto open={openUpdate} setOpen={setOpenUpdate} proyecto={selectedProyecto} onProyectoActualizado={cargarProyectos} />
-            )}
         </div>
     );
 }

@@ -1,5 +1,5 @@
 import { Button, Modal } from "flowbite-react";
-import { headers } from "next/headers";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 interface MyModalProps {
     open: boolean;
@@ -7,6 +7,7 @@ interface MyModalProps {
 }
 
 export default function MyModal({ open, setOpen }: MyModalProps) {
+    const router = useRouter(); 
         const [formulario,setFormulario] = useState({
             correo:"",
             contrasena:""
@@ -32,9 +33,12 @@ export default function MyModal({ open, setOpen }: MyModalProps) {
                 }
                 )
                 if(r.ok){
-                    alert("holaaaaaa");
+                    const data = await r.json();
+                    localStorage.setItem("user", JSON.stringify(data));
+                    router.push("/DashBoard");
+        
                 }else{
-                    alert("adios");
+                    alert("no se pudo iniciar sesion");
                 }
             }catch(e){
                 alert("e");

@@ -4,13 +4,11 @@ import opennlp.tools.tokenize.SimpleTokenizer;
 import org.springframework.stereotype.Service;
 import org.tartarus.snowball.ext.SpanishStemmer;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class ServicioNLP {

@@ -23,4 +23,13 @@ public class Proyecto {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "estado")
     private Estado estado;
+
+    @Column(name = "dia_inicio")
+    private String diaInicio;
+    @Column(name = "dia_fin")
+    private String diaFin;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "estado_proyecto")
+    private EstadoProyecto estadoProyecto;
 }
