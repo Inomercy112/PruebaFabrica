@@ -29,12 +29,23 @@ public class ServicioUsuario implements ServicioUsuarioMinimal {
 
     public void registroUsuario(UsuarioDTO usuarioDTO){
 
-        Usuario usuario = new Usuario();
         Rol rol = repositorioRol.findById(usuarioDTO.getRolDto().getIdDto());
-        Estado estado = repositorioEstado.findById(usuarioDTO.getIdDto());
+        Estado estado = repositorioEstado.findById(usuarioDTO.getEstadoDto());
         String contrasenaEncriptada = bCryptPasswordEncoder.encode(usuarioDTO.getContrasenaDto());
         usuarioDTO.setContrasenaDto(contrasenaEncriptada);
-        usuarioDTOToEntity(usuarioDTO, usuario, rol, estado);
+        Optional<Usuario> usuarioOptional = repositorioUsuario.findById(usuarioDTO.getIdDto());
+        Usuario usuario;
+        if(usuarioOptional.isPresent()){
+            System.out.println("actualizar");
+            usuario = usuarioOptional.get();
+            usuarioDTOToEntity(usuarioDTO,usuario,rol,estado);
+        }
+        else{
+            System.out.println("crear");
+            usuario = new Usuario();
+            usuarioDTOToEntity(usuarioDTO, usuario, rol, estado);
+        }
+;
         repositorioUsuario.save(usuario);
     }
 

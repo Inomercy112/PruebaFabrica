@@ -1,5 +1,5 @@
+import { Button, Modal } from "flowbite-react";
 import { useState } from "react";
-import { Modal, Button } from "flowbite-react";
 
 interface UsuarioFormProps {
     open: boolean;
@@ -18,7 +18,7 @@ export default function ModalUsuario({ open, setOpen }: UsuarioFormProps) {
         profesionDto: "",
         especialidadDto: "",
         estadoDto: 1,
-        rolDto: { idDto: "", nombreRol: "" },
+        rolDto: { idDto: "" },
     });
 
     const campos = [
@@ -77,7 +77,6 @@ export default function ModalUsuario({ open, setOpen }: UsuarioFormProps) {
             <Modal.Header>Registrar Usuario</Modal.Header>
             <Modal.Body>
                 <form className="space-y-4" onSubmit={handleSubmit}>
-                    {/* Generar Inputs Dinámicamente */}
                     {campos.map(({ name, label, type, required }) => (
                         <div key={name}>
                             <label className="block text-sm font-medium dark:text-white">{label}</label>
@@ -87,18 +86,19 @@ export default function ModalUsuario({ open, setOpen }: UsuarioFormProps) {
                                 value={(usuario as any)[name]}
                                 onChange={handleChange}
                                 required={required}
+                                placeholder={name.replace("Dto", "")}
                                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
                             />
                         </div>
                     ))}
 
-                    {/* Select para el rol */}
                     <div>
                         <label className="block text-sm font-medium dark:text-white">Rol</label>
                         <select
                             name="rolDto.idDto"
                             value={usuario.rolDto.idDto}
                             onChange={handleChange}
+                            title="rol"
                             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
                             required
                         >

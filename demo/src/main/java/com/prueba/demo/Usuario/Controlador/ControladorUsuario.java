@@ -59,4 +59,17 @@ public class ControladorUsuario {
         }
     }
 
+    @PutMapping("/Actualizar/{id}")
+    public ResponseEntity<?> actualizarUsuario(@PathVariable Integer id, @RequestBody UsuarioDTO usuarioDTO){
+        try {
+            usuarioDTO.setIdDto(id);
+            servicioUsuario.registroUsuario(usuarioDTO);
+            return ResponseEntity.ok().body("actualizado");
+
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e);
+        }
+
+    }
+
 }

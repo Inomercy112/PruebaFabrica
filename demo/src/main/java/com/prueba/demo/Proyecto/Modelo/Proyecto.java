@@ -1,0 +1,26 @@
+package com.prueba.demo.Proyecto.Modelo;
+
+import com.prueba.demo.Usuario.Modelo.Estado;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Table(name ="proyecto")
+public class Proyecto {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name ="id")
+    private int id;
+    @Column(name = "nombre_proyecto")
+    private String nombre;
+    @Column(name = "descripcion_proyecto")
+    private String descripcion;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "estado")
+    private Estado estado;
+}
