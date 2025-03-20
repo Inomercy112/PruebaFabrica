@@ -1,10 +1,19 @@
-import { DarkThemeToggle } from "flowbite-react";
+"use client";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen items-center justify-center gap-2 dark:bg-gray-800">
-      <h1 className="text-2xl dark:text-white">Flowbite React + Next.js</h1>
-      <DarkThemeToggle />
-    </main>
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      router.replace("/DashBoard");
+    } else {
+      router.replace("/sobreNosotros");
+    }
+  }, [router]);
+
+  return null;
 }
