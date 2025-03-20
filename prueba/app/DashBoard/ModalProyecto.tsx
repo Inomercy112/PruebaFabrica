@@ -1,5 +1,5 @@
+import { Button, Modal } from "flowbite-react";
 import { useState } from "react";
-import { Modal, Button } from "flowbite-react";
 
 interface ModalProyectoProps {
   open: boolean;
@@ -89,6 +89,7 @@ export default function ModalProyecto({ open, setOpen, onProyectoCreado }: Modal
           <div>
             <label className="block text-sm font-medium dark:text-white">Fecha de Inicio</label>
             <input
+              placeholder="fecha inicio"
               type="date"
               name="diaInicioDto"
               value={formData.diaInicioDto}
@@ -101,6 +102,7 @@ export default function ModalProyecto({ open, setOpen, onProyectoCreado }: Modal
           <div>
             <label className="block text-sm font-medium dark:text-white">Fecha de Fin</label>
             <input
+              placeholder="fecha final"
               type="date"
               name="diaFinDto"
               value={formData.diaFinDto}

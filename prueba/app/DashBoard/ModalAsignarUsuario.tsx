@@ -59,6 +59,7 @@ export default function ModalAsignarUsuario({
                     <select
                         className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
                         value={selectedUsuario ?? ""}
+                        title="usuario"
                         onChange={(e) => setSelectedUsuario(Number(e.target.value))}
                     >
                         <option value="">Seleccione un usuario</option>

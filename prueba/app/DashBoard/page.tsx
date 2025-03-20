@@ -1,14 +1,15 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button, DarkThemeToggle, Sidebar } from "flowbite-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { MyFooter } from "../sobreNosotros/footer";
+import Actividades from "./Actividad";
+import Etapas from "./Etapas";
 import Proyectos from "./Proyectos";
 import Usuarios from "./Usuarios";
-import Etapas from "./Etapas";
 
 export default function Dashboard() {
-    const [vista, setVista] = useState<"usuarios" | "proyectos" | "etapas">("usuarios");
+    const [vista, setVista] = useState<"usuarios" | "proyectos" | "etapas" | "actividad">("usuarios");
     const [user, setUser] = useState<{ apellidoDto: string, nombreDto: string; rolDto: { nombreRol: string, idDto: number } } | null>(null);
     const router = useRouter();
 
@@ -17,7 +18,7 @@ export default function Dashboard() {
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         } else {
-            router.push("/login");
+            router.push("/sobreNosotros");
         }
     }, []);
 
@@ -59,7 +60,10 @@ export default function Dashboard() {
                             <Button onClick={() => setVista("etapas")} className="w-full text-left">
                                 Etapas de proyecto
                             </Button>
-                            
+                            <Button onClick={() => setVista("actividad")} className="w-full text-left">
+                                Actividades Etapas
+                            </Button>
+
                             <DarkThemeToggle />
                             <Button onClick={handleLogout} className="w-full text-left bg-red-600 text-white mt-4">
                                 Cerrar Sesión
@@ -74,9 +78,10 @@ export default function Dashboard() {
                     ) : (
                         <p> </p>
                     )}
-                    {vista === "etapas" &&  <Etapas/> }
-                    
+                    {vista === "etapas" && <Etapas />}
+
                     {vista === "proyectos" && <Proyectos />}
+                    {vista === "actividad" && <Actividades />}
                 </main>
             </div>
 

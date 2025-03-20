@@ -19,13 +19,11 @@ public class ControladorEtapaProyecto {
         this.servicioEtapaProyecto = servicioEtapaProyecto;
     }
 
-    @PutMapping("/Registrar/{idProyecto}/{idEtapa}")
-    public ResponseEntity<?> guardarEtapaProyecto( @PathVariable int idProyecto, @PathVariable int idEtapa) {
+    @PostMapping("/Registrar")
+    public ResponseEntity<?> guardarEtapaProyecto(@RequestBody EtapaProyectoDTO etapaProyectoDTO ) {
 
         try {
-            EtapaProyectoDTO etapaProyectoDTO = new EtapaProyectoDTO();
-            etapaProyectoDTO.setProyectoDto(idProyecto);
-            etapaProyectoDTO.setEtapaDto(idEtapa);
+
             servicioEtapaProyecto.crear(etapaProyectoDTO);
             return ResponseEntity.ok().build();
 

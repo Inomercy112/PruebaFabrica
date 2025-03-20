@@ -1,4 +1,4 @@
-package com.prueba.demo.Etapa;
+package com.prueba.demo.Etapa.Servicio;
 
 import com.prueba.demo.Etapa.DTO.EtapaDTO;
 import com.prueba.demo.Etapa.Modelo.Etapa;

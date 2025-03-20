@@ -1,5 +1,8 @@
 package com.prueba.demo.EtapaProyecto.Servicio;
 
+import com.prueba.demo.Actividad.DTO.ActividadDTO;
+import com.prueba.demo.ActividadEtapa.RepositorioActividadEtapa;
+import com.prueba.demo.Etapa.DTO.EtapaDTO;
 import com.prueba.demo.Etapa.Modelo.Etapa;
 import com.prueba.demo.Etapa.Repositorio.RepositorioEtapa;
 import com.prueba.demo.EtapaProyecto.DTO.EtapaProyectoDTO;
@@ -11,19 +14,24 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 public class ServicioEtapaProyecto {
     private final RepositorioEtapaProyecto repositorioEtapaProyecto;
     private final RepositorioProyecto repositorioProyecto;
     private final RepositorioEtapa repositorioEtapa;
-    public ServicioEtapaProyecto(RepositorioEtapa repositorioEtapa,RepositorioProyecto repositorioProyecto,RepositorioEtapaProyecto repositorioEtapaProyecto) {
+    private final RepositorioActividadEtapa repositorioActividadEtapa;
+
+    public ServicioEtapaProyecto(RepositorioEtapa repositorioEtapa, RepositorioProyecto repositorioProyecto, RepositorioEtapaProyecto repositorioEtapaProyecto, RepositorioActividadEtapa repositorioActividadEtapa) {
         this.repositorioEtapaProyecto = repositorioEtapaProyecto;
         this.repositorioProyecto = repositorioProyecto;
         this.repositorioEtapa = repositorioEtapa;
+        this.repositorioActividadEtapa = repositorioActividadEtapa;
     }
     public void crear(EtapaProyectoDTO etapaProyectoDTO) {
         Proyecto proyectoOptional = repositorioProyecto.findById(etapaProyectoDTO.getProyectoDto()).orElseThrow();
-        Etapa etapaOptional = repositorioEtapa.findById(etapaProyectoDTO.getEtapaDto()).orElseThrow();
+        Etapa etapaOptional = repositorioEtapa.findById(etapaProyectoDTO.getEtapaDto().getIdDto()).orElseThrow();
         EtapaProyecto etapaProyecto = new EtapaProyecto();
         etapaProyectoDTOToEntity(proyectoOptional,etapaOptional,etapaProyectoDTO, etapaProyecto);
         repositorioEtapaProyecto.save(etapaProyecto);
@@ -39,12 +47,29 @@ public class ServicioEtapaProyecto {
 
     }
     private EtapaProyectoDTO etapaProyectoEntityToDTO(EtapaProyecto etapaProyecto) {
+
         EtapaProyectoDTO etapaProyectoDTO = new EtapaProyectoDTO();
         etapaProyectoDTO.setIdDto(etapaProyecto.getId());
         etapaProyectoDTO.setFechaFin(etapaProyecto.getFechaFin());
         etapaProyectoDTO.setFechaInicio(etapaProyecto.getFechaInicio());
         etapaProyectoDTO.setProyectoDto(etapaProyecto.getProyecto().getId());
-        etapaProyectoDTO.setEtapaDto(etapaProyecto.getEtapa().getId());
+        EtapaDTO etapaDTO = new EtapaDTO();
+        etapaDTO.setIdDto(etapaProyecto.getEtapa().getId());
+        etapaDTO.setNombreEtapaDto(etapaProyecto.getEtapa().getNombreEtapa());
+        etapaDTO.setDescripcionEtapaDto(etapaProyecto.getEtapa().getDescripcionEtapa());
+        etapaProyectoDTO.setEtapaDto(etapaDTO);
+        List<ActividadDTO> actividadesDTO = repositorioActividadEtapa.findByIdDesarrollador(etapaProyecto)
+                .stream()
+                .map(actividadEtapa -> {
+                    ActividadDTO actividadDTO = new ActividadDTO();
+                    actividadDTO.setIdDto(actividadEtapa.getIdActividad().getId());
+                    actividadDTO.setNombreActividadDto(actividadEtapa.getIdActividad().getNombreActividad());
+                    actividadDTO.setDescripcionActividadDto(actividadEtapa.getIdActividad().getDescripcionActividad());
+                    return actividadDTO;
+                })
+                .collect(Collectors.toList());
+
+        etapaProyectoDTO.setActividadDto(actividadesDTO);
         return etapaProyectoDTO;
     }
 

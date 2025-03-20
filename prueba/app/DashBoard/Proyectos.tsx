@@ -1,10 +1,12 @@
 import { Button, Modal } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { HiEye, HiPlus, HiXCircle, HiUserAdd } from "react-icons/hi";
+import { HiEye, HiPlus, HiUserAdd, HiXCircle } from "react-icons/hi";
+import ModalAsignarActividad from "./ModalAsignarActividad";
+import ModalAsignarEtapa from "./ModalAsignarEtapa";
+import ModalAsignarUsuario from "./ModalAsignarUsuario";
+import ModalVerEtapas from "./ModalEtapaProyecto";
 import ModalProyecto from "./ModalProyecto";
 import ModalActualizarProyecto from "./ModalProyectoActualizar";
-import ModalAsignarUsuario from "./ModalAsignarUsuario";
-import ModalAsignarEtapa from "./ModalAsignarEtapa";
 
 interface Proyecto {
     idDto: number;
@@ -26,11 +28,18 @@ interface Usuario {
         idDto: number;
     };
 }
+
+interface Actividad {
+    idDto: number;
+    nombreActividadDto: string;
+    descripcionActividadDto: string;
+}
+
 interface Etapa {
     idDto: number;
     nombreEtapaDto: string;
     descripcionEtapaDto: string;
-    estadoDto: number;
+    actividades: Actividad[];
 }
 
 export default function Proyectos() {
@@ -44,8 +53,13 @@ export default function Proyectos() {
     const [openAssign, setOpenAssign] = useState(false);
     const [openAssignEtapa, setOpenAssignEtapa] = useState(false);
     const [selectedProyecto, setSelectedProyecto] = useState<Proyecto | null>(null);
-    const [selectedUsuario, setSelectedUsuario] = useState<number | null>(null);
-    const [selectedEtapa, setSelectedEtapa] = useState<number | null>(null);
+    const [openEtapasModal, setOpenEtapasModal] = useState(false);
+    const [etapasAsignadas, setEtapasAsignadas] = useState<Etapa[]>([]);
+    const [openAssignActividad, setOpenAssignActividad] = useState(false);
+
+
+
+
     useEffect(() => {
         cargarProyectos();
     }, []);
@@ -85,6 +99,52 @@ export default function Proyectos() {
         cargarUsuarios();
     };
 
+    const handleOpenAssignActividad = async (proyecto: Proyecto) => {
+        setSelectedProyecto(proyecto);
+        await cargarEtapasProyecto(proyecto);
+        setOpenAssignActividad(true);
+    };
+
+    const cargarEtapasProyecto = async (proyecto: Proyecto) => {
+        try {
+            const response = await fetch(`http://localhost:8080/etapaProyecto/Consultar/${proyecto.idDto}`);
+            let data = await response.json();
+
+            const etapasAsignadas = data.map((etapa: any) => ({
+                idDto: etapa.etapaDto.idDto,
+                nombreEtapaDto: etapa.etapaDto.nombreEtapaDto,
+                descripcionEtapaDto: etapa.etapaDto.descripcionEtapaDto,
+                fechaInicio: etapa.fechaInicio,
+                fechaFin: etapa.fechaFin,
+                actividades: etapa.actividadDto.map((actividad: any) => ({
+                    idDto: actividad.idDto,
+                    nombreActividadDto: actividad.nombreActividadDto,
+                    descripcionActividadDto: actividad.descripcionActividadDto,
+                    estadoActividadDto: actividad.estadoActividadDto,
+                })),
+            }));
+
+
+
+
+            setEtapasAsignadas(etapasAsignadas);
+        } catch (error) {
+            console.error("Error al obtener etapas asignadas:", error);
+            alert("Hubo un error al obtener las etapas.");
+        }
+    };
+
+
+    const handleOpenEtapas = async (proyecto: Proyecto) => {
+        setSelectedProyecto(proyecto);
+        await cargarEtapasProyecto(proyecto);
+        setOpenEtapasModal(true);
+    };
+
+
+
+
+
     const handleOpenAssignEtapa = (proyecto: Proyecto) => {
         setSelectedProyecto(proyecto);
         setOpenAssignEtapa(true);
@@ -105,7 +165,9 @@ export default function Proyectos() {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(proyectoActualizado),
-            });
+            }
+
+            );
 
             if (!response.ok) throw new Error(`Error al desactivar proyecto: ${response.status}`);
 
@@ -127,6 +189,7 @@ export default function Proyectos() {
     );
 
     return (
+
         <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
                 <h2 className="text-xl sm:text-2xl font-bold">Proyectos</h2>
@@ -163,7 +226,8 @@ export default function Proyectos() {
                             <span className={`text-sm ${proyecto.estadoDto === 1 ? "text-green-600" : "text-red-600"}`}>
                                 Estado: {proyecto.estadoProyectoDto.nombreEstadoDto}
                             </span>
-                            <div className="flex gap-2 mt-2">
+
+                            <div className="flex flex-wrap gap-2 mt-2">
                                 <Button color="info" size="xs" onClick={() => handleOpenUpdate(proyecto)}>
                                     <HiEye className="w-4 h-4 mr-1" /> Ver
                                 </Button>
@@ -173,14 +237,24 @@ export default function Proyectos() {
                                 <Button color="success" size="xs" onClick={() => handleOpenAssign(proyecto)}>
                                     <HiUserAdd className="w-4 h-4 mr-1" /> Asignar Usuario
                                 </Button>
-                                <Button color="success" size="xs" onClick={() => handleOpenAssignEtapa(proyecto)}>
+                                <Button color="purple" size="xs" onClick={() => handleOpenAssignEtapa(proyecto)}>
                                     <HiUserAdd className="w-4 h-4 mr-1" /> Asignar Etapa
                                 </Button>
+                                <Button color="warning" size="xs" onClick={() => handleOpenEtapas(proyecto)}>
+                                    <HiEye className="w-4 h-4 mr-1" /> Ver Etapas
+                                </Button>
+                                <Button color="yellow" size="xs" onClick={() => handleOpenAssignActividad(proyecto)}>
+                                    <HiUserAdd className="w-4 h-4 mr-1" /> Asignar Actividad
+                                </Button>
+
+
                             </div>
                         </div>
                     ))}
                 </div>
             )}
+
+
 
             <Modal show={openConfirm} onClose={() => setOpenConfirm(false)} size="md" popup>
                 <Modal.Header />
@@ -209,6 +283,22 @@ export default function Proyectos() {
                 selectedProyectoId={selectedProyecto?.idDto ?? null}
                 onUsuarioAsignado={cargarProyectos}
             />
+
+            <ModalVerEtapas
+                open={openEtapasModal}
+                setOpen={setOpenEtapasModal}
+                etapasAsignadas={etapasAsignadas}
+                proyectoNombre={selectedProyecto?.nombreDto}
+            />
+            <ModalAsignarActividad
+                open={openAssignActividad}
+                setOpen={setOpenAssignActividad}
+                etapas={etapasAsignadas}
+                selectedProyectoId={selectedProyecto?.idDto ?? null}
+                onActividadAsignada={cargarProyectos}
+            />
+
+
 
             <ModalAsignarEtapa
                 open={openAssignEtapa}

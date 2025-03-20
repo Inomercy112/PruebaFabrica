@@ -71,6 +71,7 @@ export default function ModalActualizarProyecto({
                         <div>
                             <label className="block text-sm font-medium dark:text-white">Nombre</label>
                             <input
+                                placeholder="nombre proyecto"
                                 type="text"
                                 name="nombreDto"
                                 value={formData.nombreDto}
@@ -83,6 +84,7 @@ export default function ModalActualizarProyecto({
                         <div>
                             <label className="block text-sm font-medium dark:text-white">Descripción</label>
                             <textarea
+                                placeholder="descripcion proyecto"
                                 name="descripcionDto"
                                 value={formData.descripcionDto}
                                 onChange={handleChange}

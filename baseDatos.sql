@@ -63,12 +63,18 @@ fecha_fin date not null
 ,foreign key (id_etapa) references etapa(id));
 
 create table actividad(
-id tinyint unsigned auto_increment primary key, 
-nombre_actividad varchar(255) not null);
+id smallint unsigned auto_increment primary key, 
+nombre_actividad varchar(255) not null,
+descripcion_actividad varchar(255) not null,
+estado tinyint unsigned not null,
+foreign key (estado) references estado(id));
 
 create table etapa_actividad(
 id tinyint unsigned auto_increment primary key,
-id_etapa smallint unsigned
+id_etapa smallint unsigned not null,
+id_actividad smallint unsigned not null,
+foreign key(id_etapa) references etapa(id),
+foreign key(id_actividad) references actividad(id)
 );
 
 create table usuario_actividad(

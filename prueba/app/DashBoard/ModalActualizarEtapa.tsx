@@ -1,5 +1,5 @@
+import { Button, Modal } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { Modal, Button } from "flowbite-react";
 
 interface Etapa {
   idDto: number;
@@ -21,7 +21,7 @@ export default function ModalActualizarEtapa({
   etapa,
   onEtapaActualizada,
 }: ModalActualizarEtapaProps) {
-  const [formData, setFormData] = useState({ nombreEtapaDto: "", descripcionEtapaDto: "", estadoDto : 1 });
+  const [formData, setFormData] = useState({ nombreEtapaDto: "", descripcionEtapaDto: "", estadoDto: 1 });
 
   useEffect(() => {
     if (etapa) {
@@ -68,6 +68,7 @@ export default function ModalActualizarEtapa({
           <div>
             <label className="block text-sm font-medium dark:text-white">Nombre</label>
             <input
+              placeholder="nombre de la etapa"
               type="text"
               name="nombreEtapaDto"
               value={formData.nombreEtapaDto}
@@ -80,6 +81,7 @@ export default function ModalActualizarEtapa({
           <div>
             <label className="block text-sm font-medium dark:text-white">Descripción</label>
             <textarea
+              placeholder="descripcion de la etapa"
               name="descripcionEtapaDto"
               value={formData.descripcionEtapaDto}
               onChange={handleChange}

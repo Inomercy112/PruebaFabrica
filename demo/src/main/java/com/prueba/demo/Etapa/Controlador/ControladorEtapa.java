@@ -1,7 +1,7 @@
 package com.prueba.demo.Etapa.Controlador;
 
 import com.prueba.demo.Etapa.DTO.EtapaDTO;
-import com.prueba.demo.Etapa.ServicioEtapa;
+import com.prueba.demo.Etapa.Servicio.ServicioEtapa;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
