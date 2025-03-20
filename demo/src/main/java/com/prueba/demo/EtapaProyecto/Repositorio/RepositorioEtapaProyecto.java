@@ -9,4 +9,5 @@ import java.util.List;
 public interface RepositorioEtapaProyecto extends JpaRepository<EtapaProyecto, Long> {
     List<EtapaProyecto> findByProyecto_Id(int proyecto);
     EtapaProyecto findById(int id);
+
 }

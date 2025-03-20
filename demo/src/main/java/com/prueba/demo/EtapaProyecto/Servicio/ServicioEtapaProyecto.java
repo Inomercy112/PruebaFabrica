@@ -12,7 +12,6 @@ import com.prueba.demo.Proyecto.Repositorio.RepositorioProyecto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

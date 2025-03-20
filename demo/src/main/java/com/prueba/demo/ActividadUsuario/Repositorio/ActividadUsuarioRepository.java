@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface ActividadUsuarioRepository extends JpaRepository<ActividadUsuario, Integer> {
 
-    List<ActividadUsuario> findByIdDesarrollador(EtapaProyecto idDesarrollador);
+    List<ActividadUsuario> findByIdDesarrollador_Usuario_Id(int id);
 
 
 

@@ -5,6 +5,8 @@ import com.prueba.demo.ActividadUsuario.Servicio.ActividadUsuarioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/actividadUsuario")
 public class ControladorActividadUsuario {
@@ -21,8 +23,13 @@ public class ControladorActividadUsuario {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping("/Consultar")
-    public ResponseEntity<?> consultarActividadUsuario() {
-        return ResponseEntity.ok().build();
+    @GetMapping("/Consultar/{id}")
+    public ResponseEntity<?> consultarActividadUsuario(@PathVariable int id) {
+        try{
+            List<ActividadUsuarioDTO> actividadUsuarioDTOList = actividadUsuarioService.traerActivdadesUsuario(id);
+            return ResponseEntity.ok().body(actividadUsuarioDTOList);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

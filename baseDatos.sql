@@ -89,11 +89,12 @@ id_etapa smallint unsigned not null,
 foreign key (id_etapa)references etapa(id), 
 foreign key (id_estado) references estado(id));
 
+
 create table usuario_actividad(
 id tinyint unsigned auto_increment primary key,
 id_desarrollador smallint unsigned not null,
 id_actividad smallint unsigned not null,
-ejecucion varchar(255)not null default"en proceso",
+ejecucion varchar(255)default"en proceso",
 foreign key (id_desarrollador) references usuario_proyecto(id),
 foreign key (id_actividad) references actividad(id)
 );

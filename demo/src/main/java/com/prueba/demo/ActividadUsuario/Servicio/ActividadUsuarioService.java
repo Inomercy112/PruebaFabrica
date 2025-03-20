@@ -7,8 +7,7 @@ import com.prueba.demo.Actividad.Repositorio.RepositorioActividad;
 import com.prueba.demo.ActividadUsuario.DTO.ActividadUsuarioDTO;
 import com.prueba.demo.ActividadUsuario.Modelo.ActividadUsuario;
 import com.prueba.demo.ActividadUsuario.Repositorio.ActividadUsuarioRepository;
-import com.prueba.demo.EtapaProyecto.DTO.EtapaProyectoDTO;
-import com.prueba.demo.EtapaProyecto.Modelo.EtapaProyecto;
+import com.prueba.demo.Etapa.DTO.EtapaDTO;
 import com.prueba.demo.Proyecto.DTO.ProyectoDTO;
 import com.prueba.demo.Proyecto.Servicio.ServicioProyecto;
 import com.prueba.demo.Usuario.DTO.UsuarioDTO;
@@ -19,6 +18,9 @@ import com.prueba.demo.UsuarioProyecto.Modelo.UsuarioProyecto;
 import com.prueba.demo.UsuarioProyecto.Repositorio.RepositorioUsuarioProyecto;
 
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -51,6 +53,9 @@ public class ActividadUsuarioService {
         actividadUsuarioRepository.save(actividadUsuario);
 
     }
+    public List<ActividadUsuarioDTO> traerActivdadesUsuario(int id){
+        return actividadUsuarioRepository.findByIdDesarrollador_Usuario_Id(id).stream().map(this ::entityToDTO).toList();
+    }
 
 
 
@@ -62,19 +67,71 @@ public class ActividadUsuarioService {
     }
     private ActividadUsuarioDTO entityToDTO(ActividadUsuario actividadUsuario) {
         ActividadUsuarioDTO actividadUsuarioDTO = new ActividadUsuarioDTO();
-        actividadUsuarioDTO.setEjecucionDto(actividadUsuario.getEjecucion());
         actividadUsuarioDTO.setIdDto(actividadUsuario.getId());
+        actividadUsuarioDTO.setEjecucionDto(actividadUsuario.getEjecucion());
 
-
-        UsuarioDTO usuarioDTO = servicioUsuario.buscarPorId(actividadUsuario.getIdDesarrollador().getUsuario().getId()).orElseThrow();
         UsuarioProyectoDTO usuarioProyectoDTO = new UsuarioProyectoDTO();
+        usuarioProyectoDTO.setIdDto(actividadUsuario.getIdDesarrollador().getUsuario().getId());
+
+        UsuarioDTO usuarioDTO = new UsuarioDTO();
+        usuarioDTO.setIdDto(actividadUsuario.getIdDesarrollador().getUsuario().getId());
         usuarioProyectoDTO.setIdUsuarioDto(usuarioDTO);
-        ProyectoDTO proyectoDTO = servicioProyecto.buscarProyectoPorId(actividadUsuario.getIdDesarrollador().getProyecto().getId()).orElseThrow();
+
+        ProyectoDTO proyectoDTO = getProyectoDTO(actividadUsuario);
 
         usuarioProyectoDTO.setIdProyectoDto(proyectoDTO);
-        usuarioProyectoDTO.setIdDto(actividadUsuario.getIdDesarrollador().getIdProyecto());
         actividadUsuarioDTO.setIdDesarrolladorDto(usuarioProyectoDTO);
+
+        List<ActividadDTO> actividades = new ArrayList<>();
+        if (actividadUsuario.getIdActividadEtapa() != null) {
+            ActividadDTO actividadDTO = getActividadDTO(actividadUsuario);
+            actividades.add(actividadDTO);
+        }
+
+        actividadUsuarioDTO.setIdActividadEtapaDto(actividades);
+
         return actividadUsuarioDTO;
     }
+
+    private static ProyectoDTO getProyectoDTO(ActividadUsuario actividadUsuario) {
+        ProyectoDTO proyectoDTO = new ProyectoDTO();
+        proyectoDTO.setIdDto(actividadUsuario.getIdDesarrollador().getProyecto().getId());
+        proyectoDTO.setNombreDto(actividadUsuario.getIdDesarrollador().getProyecto().getNombre());
+        proyectoDTO.setDescripcionDto(actividadUsuario.getIdDesarrollador().getProyecto().getDescripcion());
+        proyectoDTO.setEstadoDto(actividadUsuario.getIdDesarrollador().getProyecto().getEstado().getId());
+
+        ProyectoDTO.EstadoProyectoDto estadoProyectoDTO = new ProyectoDTO.EstadoProyectoDto();
+        estadoProyectoDTO.setIdDto(actividadUsuario.getIdDesarrollador().getProyecto().getEstadoProyecto().getId());
+        estadoProyectoDTO.setNombreEstadoDto(actividadUsuario.getIdDesarrollador().getProyecto().getEstadoProyecto().getNombreEstadoProyecto());
+
+        proyectoDTO.setEstadoProyectoDto(estadoProyectoDTO);
+        proyectoDTO.setDiaInicioDto(actividadUsuario.getIdDesarrollador().getProyecto().getDiaInicio());
+        proyectoDTO.setDiaFinDto(actividadUsuario.getIdDesarrollador().getProyecto().getDiaFin());
+
+        ProyectoDTO.TipoProyectoDto tipoProyectoDTO = new ProyectoDTO.TipoProyectoDto();
+        tipoProyectoDTO.setIdDto(actividadUsuario.getIdDesarrollador().getProyecto().getTipoProyecto().getId());
+        tipoProyectoDTO.setNombreTipoProyectoDto(actividadUsuario.getIdDesarrollador().getProyecto().getTipoProyecto().getNombreTipoProyecto());
+        proyectoDTO.setTipoProyectoDto(tipoProyectoDTO);
+        return proyectoDTO;
+    }
+
+    private static ActividadDTO getActividadDTO(ActividadUsuario actividadUsuario) {
+        Actividad actividad = actividadUsuario.getIdActividadEtapa();
+        ActividadDTO actividadDTO = new ActividadDTO();
+        actividadDTO.setIdDto(actividad.getId());
+        actividadDTO.setNombreActividadDto(actividad.getNombreActividad());
+        actividadDTO.setDescripcionActividadDto(actividad.getDescripcionActividad());
+        actividadDTO.setEstadoActividadDto(actividad.getEstado().getId());
+
+        EtapaDTO etapaDTO = new EtapaDTO();
+        etapaDTO.setIdDto(actividad.getEtapa().getId());
+        etapaDTO.setNombreEtapaDto(actividad.getEtapa().getNombreEtapa());
+        etapaDTO.setDescripcionEtapaDto(actividad.getEtapa().getDescripcionEtapa());
+        etapaDTO.setEstadoDto(actividad.getEtapa().getEstado().getId());
+
+        actividadDTO.setEtapaDto(etapaDTO);
+        return actividadDTO;
+    }
+
 
 }

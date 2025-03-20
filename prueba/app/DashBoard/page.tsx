@@ -42,6 +42,7 @@ export default function Dashboard() {
                     {vista === "usuarios" && user?.rolDto.idDto === 1 && <Usuarios />}
                     {vista === "etapas" && <Etapas />}
                     {vista === "proyectos" && <Proyectos />}
+                    {vista == "actividad" }
                 </main>
             </div>
             <MyFooter />
