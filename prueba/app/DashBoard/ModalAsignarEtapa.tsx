@@ -27,15 +27,17 @@ export default function ModalAsignarEtapa({
 
     const handleAssignEtapa = async () => {
         if (!selectedProyectoId || selectedEtapa === null || !fechaInicio || !fechaFin) {
-            alert("Todos los campos son obligatorios.");
+            alert("Por favor, completa todos los campos.");
             return;
         }
 
         const etapaProyectoDTO = {
             proyectoDto: selectedProyectoId,
-            etapaDto: selectedEtapa,
+            nombreProyectoDto: "", 
+            etapaDto: { idDto: selectedEtapa },
             fechaInicio,
             fechaFin,
+            actividadDto: [],
         };
 
         try {
@@ -61,9 +63,9 @@ export default function ModalAsignarEtapa({
             <Modal.Header>Asignar Etapa al Proyecto</Modal.Header>
             <Modal.Body>
                 <div className="space-y-4">
-                    <label className="block text-sm font-medium dark:text-white">Seleccione una Etapa</label>
+                    <label className="block text-sm font-medium">Seleccione una Etapa</label>
                     <select
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                         value={selectedEtapa ?? ""}
                         title="etapa"
                         onChange={(e) => setSelectedEtapa(Number(e.target.value))}
@@ -77,11 +79,10 @@ export default function ModalAsignarEtapa({
                     </select>
 
                     <div>
-                        <label className="block text-sm font-medium dark:text-white">Fecha de Inicio</label>
+                        <label className="block text-sm font-medium">Fecha de Inicio</label>
                         <input
                             type="date"
-                            placeholder="fecha inicio"
-                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                             value={fechaInicio}
                             onChange={(e) => setFechaInicio(e.target.value)}
                             required
@@ -89,11 +90,10 @@ export default function ModalAsignarEtapa({
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium dark:text-white">Fecha de Fin</label>
+                        <label className="block text-sm font-medium">Fecha de Fin</label>
                         <input
-                            placeholder="fecha fin"
                             type="date"
-                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                             value={fechaFin}
                             onChange={(e) => setFechaFin(e.target.value)}
                             required

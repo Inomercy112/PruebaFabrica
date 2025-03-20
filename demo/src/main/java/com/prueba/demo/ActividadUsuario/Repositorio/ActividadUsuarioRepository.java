@@ -1,6 +1,6 @@
 package com.prueba.demo.ActividadUsuario.Repositorio;
 
-import com.prueba.demo.ActividadEtapa.ActividadEtapa;
+
 import com.prueba.demo.ActividadUsuario.Modelo.ActividadUsuario;
 import com.prueba.demo.EtapaProyecto.Modelo.EtapaProyecto;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +13,6 @@ public interface ActividadUsuarioRepository extends JpaRepository<ActividadUsuar
 
     List<ActividadUsuario> findByIdDesarrollador(EtapaProyecto idDesarrollador);
 
-    List<ActividadUsuario> findByIdActividadEtapa(ActividadEtapa idActividadEtapa);
+
 
 }

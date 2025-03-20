@@ -1,10 +1,8 @@
 package com.prueba.demo.ActividadUsuario.DTO;
 
-import com.prueba.demo.ActividadEtapa.ActividadEtapa;
-import com.prueba.demo.ActividadEtapa.ActividadEtapaDTO;
-import com.prueba.demo.EtapaProyecto.DTO.EtapaProyectoDTO;
-import com.prueba.demo.EtapaProyecto.Modelo.EtapaProyecto;
-import jakarta.persistence.*;
+
+import com.prueba.demo.Actividad.DTO.ActividadDTO;
+import com.prueba.demo.UsuarioProyecto.DTO.UsuarioProyectoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +14,8 @@ import java.util.List;
 @Data
 public class ActividadUsuarioDTO {
     private int idDto;
-    private EtapaProyectoDTO idDesarrolladorDto;
-    private List <ActividadEtapaDTO> idActividadEtapaDto;
+    private UsuarioProyectoDTO idDesarrolladorDto;
+
+    private List <ActividadDTO> idActividadEtapaDto;
     private String ejecucionDto;
 }

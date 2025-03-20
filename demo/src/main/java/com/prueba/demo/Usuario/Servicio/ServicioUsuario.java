@@ -1,10 +1,10 @@
 package com.prueba.demo.Usuario.Servicio;
 
 import com.prueba.demo.Usuario.DTO.UsuarioDTO;
-import com.prueba.demo.Usuario.Modelo.Estado;
+import com.prueba.demo.Estado.Modelo.Estado;
 import com.prueba.demo.Usuario.Modelo.Rol;
 import com.prueba.demo.Usuario.Modelo.Usuario;
-import com.prueba.demo.Usuario.Repositorio.RepositorioEstado;
+import com.prueba.demo.Estado.Repositorio.RepositorioEstado;
 import com.prueba.demo.Usuario.Repositorio.RepositorioRol;
 import com.prueba.demo.Usuario.Repositorio.RepositorioUsuario;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -55,6 +55,9 @@ public class ServicioUsuario implements ServicioUsuarioMinimal {
     @Override
     public Optional<UsuarioDTO> buscarPorCorreo(String correo){
         return repositorioUsuario.findByCorreo(correo).map(this::usuarioEntityToDTO);
+    }
+    public Optional<UsuarioDTO> buscarPorId(int id){
+        return repositorioUsuario.findById(id).map(this::usuarioEntityToDTO);
     }
 
     public UsuarioDTO usuarioEntityToDTO(Usuario usuario){

@@ -1,10 +1,13 @@
 package com.prueba.demo.Etapa.Modelo;
 
-import com.prueba.demo.Usuario.Modelo.Estado;
+import com.prueba.demo.Actividad.Modelo.Actividad;
+import com.prueba.demo.Estado.Modelo.Estado;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -23,6 +26,9 @@ public class Etapa {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "estado")
     private Estado estado;
+
+    @OneToMany(mappedBy = "etapa", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Actividad> actividades;
 
 
 }

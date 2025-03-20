@@ -1,4 +1,4 @@
-package com.prueba.demo.Usuario.Modelo;
+package com.prueba.demo.Estado.Modelo;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,4 +17,5 @@ public class Estado {
     private int id;
     @Column(name = "nombre_estado")
     private String nombreEstado;
+
 }

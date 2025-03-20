@@ -16,9 +16,17 @@ public class ProyectoDTO {
     private EstadoProyectoDto estadoProyectoDto;
     private String diaInicioDto;
     private String diaFinDto;
+    private TipoProyectoDto tipoProyectoDto;
+
+
     @Data
     public static class EstadoProyectoDto {
         private int idDto;
         private String nombreEstadoDto;
+    }
+    @Data
+    public static class TipoProyectoDto {
+        private int idDto;
+        private String nombreTipoProyectoDto;
     }
 }

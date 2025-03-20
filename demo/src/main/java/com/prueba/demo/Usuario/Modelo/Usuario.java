@@ -1,5 +1,6 @@
 package com.prueba.demo.Usuario.Modelo;
 
+import com.prueba.demo.Estado.Modelo.Estado;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

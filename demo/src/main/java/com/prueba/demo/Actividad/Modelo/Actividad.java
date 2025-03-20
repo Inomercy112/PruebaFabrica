@@ -1,13 +1,14 @@
 package com.prueba.demo.Actividad.Modelo;
 
-import com.prueba.demo.Usuario.Modelo.Estado;
+import com.prueba.demo.Estado.Modelo.Estado;
+import com.prueba.demo.Etapa.Modelo.Etapa;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
+
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "actividad")
@@ -21,7 +22,10 @@ public class Actividad {
     @Column(name = "descripcion_actividad")
     private String descripcionActividad;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "estado")
+    @JoinColumn(name = "id_estado")
     private Estado estado;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_etapa")
+    private Etapa etapa;
 
 }

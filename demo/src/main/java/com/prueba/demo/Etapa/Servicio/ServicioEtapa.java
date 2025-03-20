@@ -3,8 +3,8 @@ package com.prueba.demo.Etapa.Servicio;
 import com.prueba.demo.Etapa.DTO.EtapaDTO;
 import com.prueba.demo.Etapa.Modelo.Etapa;
 import com.prueba.demo.Etapa.Repositorio.RepositorioEtapa;
-import com.prueba.demo.Usuario.Modelo.Estado;
-import com.prueba.demo.Usuario.Repositorio.RepositorioEstado;
+import com.prueba.demo.Estado.Modelo.Estado;
+import com.prueba.demo.Estado.Repositorio.RepositorioEstado;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

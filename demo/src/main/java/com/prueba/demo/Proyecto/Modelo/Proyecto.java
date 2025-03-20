@@ -1,6 +1,6 @@
 package com.prueba.demo.Proyecto.Modelo;
 
-import com.prueba.demo.Usuario.Modelo.Estado;
+import com.prueba.demo.Estado.Modelo.Estado;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +23,10 @@ public class Proyecto {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "estado")
     private Estado estado;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "tipo_proyecto")
+    private TipoProyecto tipoProyecto;
 
     @Column(name = "dia_inicio")
     private String diaInicio;

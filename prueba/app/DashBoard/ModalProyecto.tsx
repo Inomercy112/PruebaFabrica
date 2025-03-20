@@ -1,5 +1,10 @@
 import { Button, Modal } from "flowbite-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+interface TipoProyecto {
+  idDto: number;
+  nombreTipoProyectoDto: string;
+}
 
 interface ModalProyectoProps {
   open: boolean;
@@ -8,20 +13,34 @@ interface ModalProyectoProps {
 }
 
 export default function ModalProyecto({ open, setOpen, onProyectoCreado }: ModalProyectoProps) {
+  const [tiposProyecto, setTiposProyecto] = useState<TipoProyecto[]>([]);
   const [formData, setFormData] = useState({
     nombreDto: "",
     descripcionDto: "",
     estadoDto: 1,
     diaInicioDto: "",
     diaFinDto: "",
-    estadoProyectoDto: {
-      idDto: "1",
-    },
+    estadoProyectoDto: { idDto: "1" },
+    tipoProyectoDto: { idDto: "" }, 
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  useEffect(() => {
+    if (open) {
+      fetch("http://localhost:8080/proyecto/Consultar/TipoProyecto")
+        .then((response) => response.json())
+        .then((data) => setTiposProyecto(data))
+        .catch((error) => console.error("Error al cargar tipos de proyecto:", error));
+    }
+  }, [open]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    if (name === "tipoProyectoDto") {
+      setFormData((prev) => ({ ...prev, tipoProyectoDto: { idDto: value } }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,15 +58,15 @@ export default function ModalProyecto({ open, setOpen, onProyectoCreado }: Modal
       alert("Proyecto registrado exitosamente");
       setOpen(false);
       onProyectoCreado();
+
       setFormData({
         nombreDto: "",
         descripcionDto: "",
         estadoDto: 1,
         diaInicioDto: "",
         diaFinDto: "",
-        estadoProyectoDto: {
-          idDto: "1",
-        },
+        estadoProyectoDto: { idDto: "1" },
+        tipoProyectoDto: { idDto: "" },
       });
     } catch (error) {
       console.error("Error al registrar proyecto:", error);
@@ -81,7 +100,6 @@ export default function ModalProyecto({ open, setOpen, onProyectoCreado }: Modal
               onChange={handleChange}
               required
               rows={3}
-              title="Descripción"
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
             />
           </div>
@@ -89,7 +107,6 @@ export default function ModalProyecto({ open, setOpen, onProyectoCreado }: Modal
           <div>
             <label className="block text-sm font-medium dark:text-white">Fecha de Inicio</label>
             <input
-              placeholder="fecha inicio"
               type="date"
               name="diaInicioDto"
               value={formData.diaInicioDto}
@@ -102,7 +119,6 @@ export default function ModalProyecto({ open, setOpen, onProyectoCreado }: Modal
           <div>
             <label className="block text-sm font-medium dark:text-white">Fecha de Fin</label>
             <input
-              placeholder="fecha final"
               type="date"
               name="diaFinDto"
               value={formData.diaFinDto}
@@ -110,6 +126,24 @@ export default function ModalProyecto({ open, setOpen, onProyectoCreado }: Modal
               required
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium dark:text-white">Tipo de Proyecto</label>
+            <select
+              name="tipoProyectoDto"
+              value={formData.tipoProyectoDto.idDto}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+            >
+              <option value="">Seleccione un tipo de proyecto</option>
+              {tiposProyecto.map((tipo) => (
+                <option key={tipo.idDto} value={tipo.idDto}>
+                  {tipo.nombreTipoProyectoDto}
+                </option>
+              ))}
+            </select>
           </div>
 
           <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">

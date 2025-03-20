@@ -1,7 +1,7 @@
 package com.prueba.demo.ActividadUsuario.Modelo;
 
-import com.prueba.demo.ActividadEtapa.ActividadEtapa;
-import com.prueba.demo.EtapaProyecto.Modelo.EtapaProyecto;
+import com.prueba.demo.Actividad.Modelo.Actividad;
+import com.prueba.demo.UsuarioProyecto.Modelo.UsuarioProyecto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,10 +19,10 @@ public class ActividadUsuario {
     private int id;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_desarrollador")
-    private EtapaProyecto idDesarrollador;
+    private UsuarioProyecto idDesarrollador;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_actividad")
-    private ActividadEtapa idActividadEtapa;
+    private Actividad idActividadEtapa;
     @Column(name = "ejecucion")
     private String ejecucion;
 

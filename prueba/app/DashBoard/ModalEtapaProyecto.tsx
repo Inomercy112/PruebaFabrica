@@ -19,27 +19,27 @@ interface Etapa {
 interface ModalVerEtapasProps {
     open: boolean;
     setOpen: (open: boolean) => void;
-    etapasAsignadas: Etapa[];
+    etapas: Etapa[];
     proyectoNombre?: string;
 }
 
 export default function ModalVerEtapas({
     open,
     setOpen,
-    etapasAsignadas,
+    etapas,
     proyectoNombre,
 }: ModalVerEtapasProps) {
     return (
         <Modal show={open} onClose={() => setOpen(false)}>
             <Modal.Header>Etapas de {proyectoNombre}</Modal.Header>
             <Modal.Body>
-                {etapasAsignadas.length === 0 ? (
+                {etapas.length === 0 ? (
                     <p className="text-gray-500 text-center">
                         No hay etapas asignadas a este proyecto.
                     </p>
                 ) : (
                     <ul className="divide-y divide-gray-200">
-                        {etapasAsignadas.map((etapa) => (
+                        {etapas.map((etapa) => (
                             <li key={etapa.idDto} className="p-4 bg-gray-50 rounded-lg shadow-sm">
                                 <h3 className="font-semibold text-lg text-gray-900">
                                     {etapa.nombreEtapaDto}
@@ -67,12 +67,12 @@ export default function ModalVerEtapas({
                                                     </span>{" "}
                                                     {actividad.descripcionActividadDto}
                                                     <span
-                                                        className={`ml-2 px-2 py-1 text-xs font-medium rounded-full ${actividad.estadoActividadDto === 0
+                                                        className={`ml-2 px-2 py-1 text-xs font-medium rounded-full ${actividad.estadoActividadDto === 1
                                                                 ? "bg-yellow-200 text-yellow-800"
                                                                 : "bg-green-200 text-green-800"
                                                             }`}
                                                     >
-                                                        {actividad.estadoActividadDto === 0
+                                                        {actividad.estadoActividadDto === 1
                                                             ? "Pendiente"
                                                             : "Completado"}
                                                     </span>
