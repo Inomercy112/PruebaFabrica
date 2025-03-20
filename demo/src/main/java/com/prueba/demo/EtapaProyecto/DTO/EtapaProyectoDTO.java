@@ -15,6 +15,7 @@ import java.util.List;
 public class EtapaProyectoDTO {
     private int idDto;
     private int proyectoDto;
+    private String nombreProyectoDto;
     private EtapaDTO etapaDto;
     private String fechaInicio;
     private String fechaFin;
