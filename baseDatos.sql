@@ -99,7 +99,47 @@ foreign key (id_desarrollador) references usuario_proyecto(id),
 foreign key (id_actividad) references actividad(id)
 );
 
+create table tipo_error(
+id smallint unsigned auto_increment primary key,
+nombre_error varchar(255) not null);
+
+INSERT INTO tipo_error (nombre_error) VALUES 
+("Error de Sintaxis"),
+("Error de Compilación"),
+("Error de Ejecución"),
+("Error Lógico"),
+("Error de Concurrencia"),
+("Error de Memoria"),
+("Error de Seguridad"),
+("Error de Red"),
+("Error de Entrada/Salida"),
+("Error de Base de Datos"),
+("Error de Permisos"),
+("Error de Configuración"),
+("Error de Dependencias"),
+("Error de Timeout"),
+("Error de Autenticación"),
+("Error de Autorización"),
+("Error de Integración"),
+("Error de Serialización"),
+("Error de Cache"),
+("Error de Redireccionamiento");
+
+create table error_actividad(
+id smallint unsigned auto_increment primary key,
+id_usuario_actividad tinyint unsigned not null,
+id_tipo_error smallint unsigned not null,
+descripcion_error varchar(255),
+foreign key (id_usuario_actividad)references usuario_actividad(id),
+foreign key(id_tipo_error) references tipo_error(id)
+);
+
 create table interrupcion(id tinyint unsigned auto_increment primary key,
-tipo varchar(255)not null,id_actividad tinyint unsigned not null,fecha date not null, hora time not null,duracion varchar(255) not null, foreign key (id_actividad) references usuario_actividad(id));
+tipo varchar(255)not null,
+id_usuario_actividad tinyint unsigned not null,
+fecha date not null, 
+hora time not null,
+duracion varchar(255) not null, 
+foreign key (id_actividad) references usuario_actividad(id));
 
 

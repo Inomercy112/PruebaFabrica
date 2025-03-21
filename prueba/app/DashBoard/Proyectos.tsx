@@ -2,7 +2,7 @@ import { Button, Modal } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiEye, HiPlus } from "react-icons/hi";
 import { useRouter } from "next/navigation";
-import ModalProyecto from "./ModalProyecto"; // Importamos el modal de registro
+import ModalProyecto from "./ModalProyecto";
 import ModalActualizarProyecto from "./ModalProyectoActualizar";
 
 interface Proyecto {
@@ -25,7 +25,7 @@ interface Proyecto {
 export default function Proyectos() {
     const [proyectos, setProyectos] = useState<Proyecto[]>([]);
     const [search, setSearch] = useState("");
-    const [openForm, setOpenForm] = useState(false); // Estado para el modal de registro
+    const [openForm, setOpenForm] = useState(false);
     const router = useRouter();
     const [openUpdate, setOpenUpdate] = useState(false);
     const [selectedProyecto, setSelectedProyecto] = useState<Proyecto | null>(null);
@@ -55,11 +55,12 @@ export default function Proyectos() {
     );
 
     return (
-        <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
+        <div className="w-full h-full p-4 sm:p-6 rounded-lg shadow bg-white dark:bg-gray-800"
+>
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
-                <h2 className="text-xl sm:text-2xl font-bold">Proyectos</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Proyectos</h2>
                 <button
-                    onClick={() => setOpenForm(true)} // Abre el modal de registro
+                    onClick={() => setOpenForm(true)}
                     className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
                 >
                     <HiPlus className="text-xl" />
@@ -71,28 +72,27 @@ export default function Proyectos() {
                 <input
                     type="text"
                     placeholder="Buscar proyecto..."
-                    className="w-full sm:w-1/2 px-4 py-2 mb-4 border border-gray-300 rounded-lg"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full sm:w-1/2 px-4 py-2 mb-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                 />
             </div>
 
             {proyectosFiltrados.length === 0 ? (
-                <p className="text-center text-gray-500">No hay proyectos disponibles.</p>
+                <p className="text-center text-gray-500 dark:text-gray-400">No hay proyectos disponibles.</p>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {proyectosFiltrados.map((proyecto) => (
-                        <div key={proyecto.idDto} className="p-4 border rounded-lg shadow-sm flex flex-col">
-                            <span className="font-semibold">{proyecto.nombreDto}</span>
-                            <span className="text-gray-500 text-sm">{proyecto.descripcionDto}</span>
-                            <span className="text-gray-500 text-sm">{proyecto.tipoProyectoDto.nombreTipoProyectoDto}</span>
-                            <span className="text-sm text-gray-700">
+                        <div key={proyecto.idDto} className="p-4 border rounded-lg shadow-sm bg-gray-50 dark:bg-gray-800 flex flex-col">
+                            <span className="font-semibold text-gray-900 dark:text-white">{proyecto.nombreDto}</span>
+                            <span className="text-gray-700 dark:text-gray-300 text-sm">{proyecto.descripcionDto}</span>
+                            <span className="text-gray-700 dark:text-gray-300 text-sm">{proyecto.tipoProyectoDto.nombreTipoProyectoDto}</span>
+                            <span className="text-sm text-gray-600 dark:text-gray-400">
                                 Inicio: {proyecto.diaInicioDto} - Fin: {proyecto.diaFinDto}
                             </span>
                             <span className={`text-sm ${proyecto.estadoDto === 1 ? "text-green-600" : "text-red-600"}`}>
                                 Estado: {proyecto.estadoProyectoDto.nombreEstadoDto}
                             </span>
 
+                            {/* Botones */}
                             <div className="flex flex-wrap gap-2 mt-2">
                                 <Button color="info" size="xs" onClick={() => handleVerProyecto(proyecto)}>
                                     <HiEye className="w-4 h-4 mr-1" /> Ver
@@ -106,8 +106,7 @@ export default function Proyectos() {
                 </div>
             )}
 
-
-                        <ModalProyecto open={openForm} setOpen={setOpenForm} onProyectoCreado={cargarProyectos} />
+            <ModalProyecto open={openForm} setOpen={setOpenForm} onProyectoCreado={cargarProyectos} />
             {selectedProyecto && (
                 <ModalActualizarProyecto open={openUpdate} setOpen={setOpenUpdate} proyecto={selectedProyecto} onProyectoActualizado={cargarProyectos} />
             )}

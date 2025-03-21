@@ -12,6 +12,7 @@ import java.util.List;
 public interface ActividadUsuarioRepository extends JpaRepository<ActividadUsuario, Integer> {
 
     List<ActividadUsuario> findByIdDesarrollador_Usuario_Id(int id);
+    List<ActividadUsuario> findByIdDesarrollador_Proyecto_Id(int id);
 
 
 

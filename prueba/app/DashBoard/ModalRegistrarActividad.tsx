@@ -38,9 +38,7 @@ export default function ModalRegistrarActividad({
     const [etapas, setEtapas] = useState<Etapa[]>([]);
     const [selectedUsuario, setSelectedUsuario] = useState<number | null>(null);
     const [selectedActividades, setSelectedActividades] = useState<number[]>([]);
-    const [ejecucion, setEjecucion] = useState("");
 
-    // Cargar usuarios del proyecto y actividades organizadas por etapas
     useEffect(() => {
         if (open) {
             fetch(`http://localhost:8080/proyecto/Consultar/UsuarioProyecto/${proyectoId}`)
@@ -78,9 +76,11 @@ export default function ModalRegistrarActividad({
 
         const actividadUsuarioDTO = {
             idDesarrolladorDto: {
-                idUsuarioDto: { idDto: selectedUsuario }
+                idUsuarioDto: { idDto: selectedUsuario },
+                idProyectoDto:{
+                    idDto:proyectoId
+                }
             },
-            ejecucionDto: ejecucion,
             idActividadEtapaDto: selectedActividades.map(id => ({ idDto: id }))
         };
 
@@ -107,7 +107,6 @@ export default function ModalRegistrarActividad({
             <Modal.Header>Registrar Actividad para Usuario</Modal.Header>
             <Modal.Body>
                 <div className="space-y-4">
-                    {/* Seleccionar Usuario */}
                     <label className="block text-sm font-medium dark:text-white">Seleccione un Usuario</label>
                     <select
                         className="w-full px-4 py-2 border rounded-lg dark:bg-gray-800 dark:text-white"
@@ -122,7 +121,6 @@ export default function ModalRegistrarActividad({
                         ))}
                     </select>
 
-                    {/* Seleccionar Actividades Agrupadas por Etapas */}
                     <label className="block text-sm font-medium dark:text-white">Seleccione Actividades</label>
                     <div className="max-h-48 overflow-y-auto border rounded-lg p-3 bg-gray-100 dark:bg-gray-800">
                         {etapas.length === 0 ? (
@@ -166,16 +164,6 @@ export default function ModalRegistrarActividad({
                             ))
                         )}
                     </div>
-
-                    {/* Campo de ejecución */}
-                    <label className="block text-sm font-medium dark:text-white">Ejecutado</label>
-                    <input
-                        type="text"
-                        className="w-full px-4 py-2 border rounded-lg dark:bg-gray-800 dark:text-white"
-                        placeholder="Estado de ejecución"
-                        value={ejecucion}
-                        onChange={(e) => setEjecucion(e.target.value)}
-                    />
                 </div>
             </Modal.Body>
             <Modal.Footer>

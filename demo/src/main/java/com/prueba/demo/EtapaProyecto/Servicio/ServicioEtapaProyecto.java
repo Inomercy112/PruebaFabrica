@@ -53,8 +53,8 @@ public class ServicioEtapaProyecto {
         etapaDTO.setNombreEtapaDto(etapaProyecto.getEtapa().getNombreEtapa());
         etapaDTO.setDescripcionEtapaDto(etapaProyecto.getEtapa().getDescripcionEtapa());
         etapaProyectoDTO.setEtapaDto(etapaDTO);
-        if (etapaProyecto.getEtapa().getActividades() != null) {
-            List<ActividadDTO> actividadDTOList = etapaProyecto.getEtapa().getActividades().stream()
+        if (etapaProyecto.getActividades() != null) {
+            List<ActividadDTO> actividadDTOList = etapaProyecto.getActividades().stream()
                     .map(actividad -> {
                         ActividadDTO actividadDTO = new ActividadDTO();
                         actividadDTO.setIdDto(actividad.getId());

@@ -96,38 +96,44 @@ export default function Usuarios() {
 
 
     return (
-        <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
+        <div className="w-full h-full p-4 sm:p-6 rounded-lg shadow bg-white dark:bg-gray-800"
+>
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
-                <h2 className="text-xl sm:text-2xl font-bold">Usuarios</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Usuarios</h2>
                 <button
                     onClick={() => setOpenForm(true)}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
                 >
                     <HiPlus className="text-xl" />
                     <span className="hidden sm:inline">Nuevo</span>
                 </button>
             </div>
 
+            {/* Input de búsqueda */}
             <div className="flex justify-center sm:justify-start">
                 <input
                     type="text"
                     placeholder="Buscar usuario..."
-                    className="w-full sm:w-1/2 px-4 py-2 mb-4 border border-gray-300 rounded-lg"
+                    className="w-full sm:w-1/2 px-4 py-2 mb-4 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-blue-500"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
             </div>
 
+            {/* Lista de usuarios */}
             {usuariosFiltrados.length === 0 ? (
-                <p className="text-center text-gray-500">No hay usuarios disponibles.</p>
+                <p className="text-center text-gray-500 dark:text-gray-400">No hay usuarios disponibles.</p>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {usuariosFiltrados.map((usuario) => (
-                        <div key={usuario.idDto} className="p-4 border rounded-lg shadow-sm flex flex-col">
-                            <span className="font-semibold">{usuario.nombreDto} {usuario.apellidoDto}</span>
-                            <span className="text-gray-500 text-sm">{usuario.correoDto}</span>
-                            <span className="text-gray-500 text-sm">{usuario.rolDto.nombreRol}</span>
+                        <div key={usuario.idDto} className="p-4 bg-gray-50 dark:bg-gray-700 border dark:border-gray-600 rounded-lg shadow flex flex-col">
+                            <span className="font-semibold text-gray-900 dark:text-white">
+                                {usuario.nombreDto} {usuario.apellidoDto}
+                            </span>
+                            <span className="text-gray-500 dark:text-gray-400 text-sm">{usuario.correoDto}</span>
+                            <span className="text-gray-500 dark:text-gray-400 text-sm">{usuario.rolDto.nombreRol}</span>
 
+                            {/* Botones */}
                             <div className="flex gap-2 mt-2">
                                 <Button color="info" size="xs" onClick={() => handleOpenUpdate(usuario)}>
                                     <HiEye className="w-4 h-4 mr-1" /> Ver
@@ -141,6 +147,7 @@ export default function Usuarios() {
                 </div>
             )}
 
+            {/* Modales */}
             <ModalUsuario open={openForm} setOpen={setOpenForm} />
 
             {selectedUser && <ModalActualizarUsuario open={openUpdate} setOpen={setOpenUpdate} usuario={selectedUser} />}
@@ -151,7 +158,7 @@ export default function Usuarios() {
                     <div className="text-center">
                         <HiXCircle className="mx-auto mb-4 w-12 h-12 text-red-600" />
                         <h3 className="mb-5 text-sm sm:text-lg font-normal text-gray-500 dark:text-gray-400">
-                            ¿Estás seguro de que deseas desactivar a {selectedUser?.nombreDto}?
+                            ¿Estás seguro de que deseas desactivar a <strong>{selectedUser?.nombreDto}</strong>?
                         </h3>
                         <div className="flex flex-col sm:flex-row justify-center gap-4">
                             <Button color="failure" onClick={handleDesactivarUsuario}>
@@ -165,5 +172,6 @@ export default function Usuarios() {
                 </Modal.Body>
             </Modal>
         </div>
+
     );
 }

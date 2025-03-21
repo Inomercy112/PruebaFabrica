@@ -1,11 +1,14 @@
 package com.prueba.demo.EtapaProyecto.Modelo;
 
+import com.prueba.demo.Actividad.Modelo.Actividad;
 import com.prueba.demo.Etapa.Modelo.Etapa;
 import com.prueba.demo.Proyecto.Modelo.Proyecto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -27,4 +30,7 @@ public class EtapaProyecto {
     private String fechaInicio;
     @Column(name = "fecha_fin")
     private String fechaFin;
+
+    @OneToMany(mappedBy = "etapaProyecto", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Actividad> actividades;
 }

@@ -5,14 +5,18 @@ interface Usuario {
     idDto: number;
     nombreDto: string;
     apellidoDto: string;
+    rolDto: {
+        idDto: number;
+        nombreRol: string;
+    };
 }
 
 interface ModalAsignarUsuarioProps {
     open: boolean;
     setOpen: (open: boolean) => void;
     usuarios: Usuario[];
-    selectedProyectoId: number | null; // 🔹 ID del proyecto seleccionado
-    onUsuarioAsignado: () => void; // 🔹 Callback para actualizar la lista
+    selectedProyectoId: number | null;
+    onUsuarioAsignado: () => void;
 }
 
 export default function ModalAsignarUsuario({
@@ -23,6 +27,9 @@ export default function ModalAsignarUsuario({
     onUsuarioAsignado,
 }: ModalAsignarUsuarioProps) {
     const [selectedUsuario, setSelectedUsuario] = useState<number | null>(null);
+
+    // Filtrar solo los usuarios con rol 2 o 3
+    const usuariosFiltrados = usuarios.filter(user => user.rolDto.idDto === 2 || user.rolDto.idDto === 3);
 
     const handleAssignWorker = async () => {
         if (!selectedProyectoId || selectedUsuario === null) {
@@ -43,7 +50,7 @@ export default function ModalAsignarUsuario({
 
             alert("Usuario asignado correctamente");
             setOpen(false);
-            onUsuarioAsignado(); // 🔹 Recargar proyectos tras asignar
+            onUsuarioAsignado();
         } catch (error) {
             console.error("Error al asignar usuario:", error);
             alert("Hubo un error al asignar el usuario.");
@@ -55,24 +62,35 @@ export default function ModalAsignarUsuario({
             <Modal.Header>Asignar Usuario al Proyecto</Modal.Header>
             <Modal.Body>
                 <div className="space-y-4">
-                    <label className="block text-sm font-medium dark:text-white">Seleccionar Usuario</label>
-                    <select
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
-                        value={selectedUsuario ?? ""}
-                        title="usuario"
-                        onChange={(e) => setSelectedUsuario(Number(e.target.value))}
-                    >
-                        <option value="">Seleccione un usuario</option>
-                        {usuarios.map((usuario) => (
-                            <option key={usuario.idDto} value={usuario.idDto}>
-                                {usuario.nombreDto} {usuario.apellidoDto}
-                            </option>
-                        ))}
-                    </select>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-white">
+                        Seleccionar Usuario
+                    </label>
+                    <div className="relative">
+                        <select
+                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 appearance-none"
+                            value={selectedUsuario ?? ""}
+                            title="usuario"
+                            onChange={(e) => setSelectedUsuario(Number(e.target.value))}
+                        >
+                            <option value="" disabled>Seleccione un usuario</option>
+                            {usuariosFiltrados.length > 0 ? (
+                                usuariosFiltrados.map((usuario) => (
+                                    <option key={usuario.idDto} value={usuario.idDto}>
+                                        {usuario.nombreDto} {usuario.apellidoDto} - {usuario.rolDto.nombreRol}
+                                    </option>
+                                ))
+                            ) : (
+                                <option value="" disabled>No hay usuarios disponibles</option>
+                            )}
+                        </select>
+                        <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                            ⏷
+                        </div>
+                    </div>
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <Button color="success" onClick={handleAssignWorker}>
+                <Button color="success" onClick={handleAssignWorker} disabled={!selectedUsuario}>
                     Asignar
                 </Button>
                 <Button color="gray" onClick={() => setOpen(false)}>

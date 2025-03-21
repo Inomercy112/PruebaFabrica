@@ -6,17 +6,26 @@ import { MyFooter } from "../sobreNosotros/footer";
 import Etapas from "./Etapas";
 import Proyectos from "./Proyectos";
 import Usuarios from "./Usuarios";
+import ActividadUsuarioPage from "./Actividad";
 
+interface Usuario {
+    idDto: number;
+    nombreDto: string;
+    apellidoDto: string;
+    rolDto: {
+        idDto: number
+    }
+}
 
 
 export default function Dashboard() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [vista, setVista] = useState(searchParams.get("vista") || "usuarios");
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState<Usuario | null>(null);
 
     useEffect(() => {
-        setVista(searchParams.get("vista") || "usuarios");
+        setVista(searchParams.get("vista") || "proyectos");
     }, [searchParams]);
 
     useEffect(() => {
@@ -35,14 +44,15 @@ export default function Dashboard() {
 
     return (
         <div className="flex flex-col min-h-screen">
-            <div className="flex flex-1">
+            <div className="flex bg-gray-100 dark:bg-gray-900">
                 <DashboardSidebar user={user} handleLogout={handleLogout} />
 
                 <main className="flex-1 p-6 overflow-auto">
                     {vista === "usuarios" && user?.rolDto.idDto === 1 && <Usuarios />}
-                    {vista === "etapas" && <Etapas />}
-                    {vista === "proyectos" && <Proyectos />}
-                    {vista == "actividad" }
+                    {vista === "etapas" && (user?.rolDto.idDto === 2 || user?.rolDto.idDto === 1) && <Etapas />}
+                    {vista === "proyectos" && (user?.rolDto.idDto === 2 || user?.rolDto.idDto === 1) && <Proyectos />}
+                    {vista === "actividad" && (user?.rolDto.idDto === 3 || user?.rolDto.idDto === 2) && <ActividadUsuarioPage />}
+
                 </main>
             </div>
             <MyFooter />

@@ -8,6 +8,7 @@ import com.prueba.demo.ActividadUsuario.DTO.ActividadUsuarioDTO;
 import com.prueba.demo.ActividadUsuario.Modelo.ActividadUsuario;
 import com.prueba.demo.ActividadUsuario.Repositorio.ActividadUsuarioRepository;
 import com.prueba.demo.Etapa.DTO.EtapaDTO;
+import com.prueba.demo.EtapaProyecto.DTO.EtapaProyectoDTO;
 import com.prueba.demo.Proyecto.DTO.ProyectoDTO;
 import com.prueba.demo.Proyecto.Servicio.ServicioProyecto;
 import com.prueba.demo.Usuario.DTO.UsuarioDTO;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -44,24 +46,36 @@ public class ActividadUsuarioService {
         this.repositorioActividad = repositorioActividad;
     }
     public void guardarActividadUsuario(ActividadUsuarioDTO actividadUsuarioDTO) {
-        ActividadUsuario actividadUsuario = new ActividadUsuario();
-        System.out.println(actividadUsuarioDTO.getIdDesarrolladorDto().getIdUsuarioDto());
-        UsuarioProyecto usuarioProyecto = repositorioUsuarioProyecto.findByIdProyecto(actividadUsuarioDTO.getIdDesarrolladorDto().getIdUsuarioDto().getIdDto());
+        UsuarioProyecto usuarioProyecto = repositorioUsuarioProyecto.findById(actividadUsuarioDTO.getIdDesarrolladorDto().getIdDto()).orElseThrow();
 
-        Actividad actividad = repositorioActividad.findById(actividadUsuarioDTO.getIdActividadEtapaDto().get(0).getIdDto()).orElse(null);
-        actividadUsuarioDTOToEntity(usuarioProyecto,actividadUsuarioDTO,actividadUsuario,actividad);
-        actividadUsuarioRepository.save(actividadUsuario);
+        for (ActividadDTO actividadDTO : actividadUsuarioDTO.getIdActividadEtapaDto()) {
+            Optional<Actividad> actividadOptional = repositorioActividad.findById(actividadDTO.getIdDto());
 
+            if (actividadOptional.isEmpty()) {
+                throw new RuntimeException("Actividad no encontrada para el ID: " + actividadDTO.getIdDto());
+            }
+
+            Actividad actividad = actividadOptional.get();
+            ActividadUsuario actividadUsuario = new ActividadUsuario();
+            actividadUsuarioDTOToEntity(usuarioProyecto,actividadUsuarioDTO,actividadUsuario,actividad);
+
+            actividadUsuarioRepository.save(actividadUsuario);
+        }
     }
+
+
     public List<ActividadUsuarioDTO> traerActivdadesUsuario(int id){
         return actividadUsuarioRepository.findByIdDesarrollador_Usuario_Id(id).stream().map(this ::entityToDTO).toList();
     }
+    public List<ActividadUsuarioDTO> traerActivdadesProyecto(int id){
+        return actividadUsuarioRepository.findByIdDesarrollador_Proyecto_Id(id).stream().map(this ::entityToDTO).toList();
+    }
+
 
 
 
     private void actividadUsuarioDTOToEntity(UsuarioProyecto usuarioProyecto,ActividadUsuarioDTO actividadUsuarioDTO, ActividadUsuario actividadUsuario, Actividad actividad) {
         actividadUsuario.setEjecucion(actividadUsuarioDTO.getEjecucionDto());
-        actividadUsuario.setIdActividadEtapa(actividadUsuario.getIdActividadEtapa());
         actividadUsuario.setIdDesarrollador(usuarioProyecto);
         actividadUsuario.setIdActividadEtapa(actividad);
     }
@@ -75,6 +89,8 @@ public class ActividadUsuarioService {
 
         UsuarioDTO usuarioDTO = new UsuarioDTO();
         usuarioDTO.setIdDto(actividadUsuario.getIdDesarrollador().getUsuario().getId());
+        usuarioDTO.setNombreDto(actividadUsuario.getIdDesarrollador().getUsuario().getNombre());
+        usuarioDTO.setApellidoDto(actividadUsuario.getIdDesarrollador().getUsuario().getApellido());
         usuarioProyectoDTO.setIdUsuarioDto(usuarioDTO);
 
         ProyectoDTO proyectoDTO = getProyectoDTO(actividadUsuario);
@@ -116,21 +132,51 @@ public class ActividadUsuarioService {
     }
 
     private static ActividadDTO getActividadDTO(ActividadUsuario actividadUsuario) {
+        if (actividadUsuario == null || actividadUsuario.getIdActividadEtapa() == null) {
+            return null;
+        }
+
         Actividad actividad = actividadUsuario.getIdActividadEtapa();
         ActividadDTO actividadDTO = new ActividadDTO();
         actividadDTO.setIdDto(actividad.getId());
         actividadDTO.setNombreActividadDto(actividad.getNombreActividad());
         actividadDTO.setDescripcionActividadDto(actividad.getDescripcionActividad());
-        actividadDTO.setEstadoActividadDto(actividad.getEstado().getId());
 
-        EtapaDTO etapaDTO = new EtapaDTO();
-        etapaDTO.setIdDto(actividad.getEtapa().getId());
-        etapaDTO.setNombreEtapaDto(actividad.getEtapa().getNombreEtapa());
-        etapaDTO.setDescripcionEtapaDto(actividad.getEtapa().getDescripcionEtapa());
-        etapaDTO.setEstadoDto(actividad.getEtapa().getEstado().getId());
+        if (actividad.getEstado() != null) {
+            actividadDTO.setEstadoActividadDto(actividad.getEstado().getId());
+        }
 
-        actividadDTO.setEtapaDto(etapaDTO);
+        if (actividad.getEtapaProyecto() != null) {
+            EtapaProyectoDTO etapaProyectoDTO = new EtapaProyectoDTO();
+            etapaProyectoDTO.setIdDto(actividad.getEtapaProyecto().getId());
+
+            if (actividad.getEtapaProyecto().getProyecto() != null) {
+                etapaProyectoDTO.setProyectoDto(actividad.getEtapaProyecto().getProyecto().getId());
+                etapaProyectoDTO.setNombreProyectoDto(actividad.getEtapaProyecto().getProyecto().getNombre());
+            }
+
+            if (actividad.getEtapaProyecto().getEtapa() != null) {
+                EtapaDTO etapaDTO = getEtapaDTO(actividad);
+
+                etapaProyectoDTO.setEtapaDto(etapaDTO);
+            }
+
+            actividadDTO.setEtapaProyectoDTO(etapaProyectoDTO);
+        }
+
         return actividadDTO;
+    }
+
+    private static EtapaDTO getEtapaDTO(Actividad actividad) {
+        EtapaDTO etapaDTO = new EtapaDTO();
+        etapaDTO.setIdDto(actividad.getEtapaProyecto().getEtapa().getId());
+        etapaDTO.setNombreEtapaDto(actividad.getEtapaProyecto().getEtapa().getNombreEtapa());
+        etapaDTO.setDescripcionEtapaDto(actividad.getEtapaProyecto().getEtapa().getDescripcionEtapa());
+
+        if (actividad.getEtapaProyecto().getEtapa().getEstado() != null) {
+            etapaDTO.setEstadoDto(actividad.getEtapaProyecto().getEtapa().getEstado().getId());
+        }
+        return etapaDTO;
     }
 
 

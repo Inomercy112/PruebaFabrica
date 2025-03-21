@@ -27,8 +27,5 @@ public class Etapa {
     @JoinColumn(name = "estado")
     private Estado estado;
 
-    @OneToMany(mappedBy = "etapa", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Actividad> actividades;
-
 
 }

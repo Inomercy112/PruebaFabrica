@@ -9,7 +9,7 @@ interface Etapa {
     nombreEtapaDto: string;
     descripcionEtapaDto: string;
     estadoDto: number;
-    
+
 }
 
 export default function Etapas() {
@@ -46,22 +46,22 @@ export default function Etapas() {
 
     const handleDesactivarEtapa = async () => {
         if (!selectedEtapa) return;
-    
+
         try {
             const etapaActualizada = { ...selectedEtapa, estadoDto: 2 };
-    
+
             const response = await fetch(`http://localhost:8080/etapa/Actualizar/${selectedEtapa.idDto}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(etapaActualizada),
             });
-    
+
             if (!response.ok) throw new Error(`Error al desactivar etapa: ${response.status}`);
-    
+
             setEtapas((prev) =>
                 prev.map((e) => (e.idDto === selectedEtapa.idDto ? etapaActualizada : e))
             );
-    
+
             alert("Etapa desactivada correctamente");
             setOpenConfirm(false);
         } catch (error) {
@@ -74,53 +74,70 @@ export default function Etapas() {
         etapa.nombreEtapaDto.toLowerCase().includes(search.toLowerCase())
     );
 
-    
+
 
 
     return (
-        <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
+        <div className="w-full h-full p-4 sm:p-6 rounded-lg shadow bg-white dark:bg-gray-800">
+            {/* Encabezado */}
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
-                <h2 className="text-xl sm:text-2xl font-bold">Etapas</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Etapas</h2>
                 <button
                     onClick={() => setOpenForm(true)}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
                 >
                     <HiPlus className="text-xl" />
                     <span className="hidden sm:inline">Nueva Etapa</span>
                 </button>
             </div>
 
+            {/* Buscador */}
             <div className="flex justify-center sm:justify-start">
                 <input
                     type="text"
                     placeholder="Buscar etapa..."
-                    className="w-full sm:w-1/2 px-4 py-2 mb-4 border border-gray-300 rounded-lg"
+                    className="w-full sm:w-1/2 px-4 py-2 mb-4 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
             </div>
 
+            {/* Lista de Etapas */}
             {etapasFiltradas.length === 0 ? (
-                <p className="text-center text-gray-500">No hay etapas disponibles.</p>
+                <p className="text-center text-gray-500 dark:text-gray-400">No hay etapas disponibles.</p>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {etapas.map((etapa) => (
-                        <div key={etapa.idDto} className="p-4 border rounded-lg shadow-sm flex flex-col">
-                            <span className="font-semibold">{etapa.nombreEtapaDto}</span>
-                            <span className="text-gray-500 text-sm">{etapa.descripcionEtapaDto}</span>
-                            <div className="flex gap-2 mt-2">
-                                <Button color="info" size="xs" onClick={() => handleOpenUpdate(etapa)}>
-                                    <HiEye className="w-4 h-4 mr-1" /> Ver
+                    {etapasFiltradas.map((etapa) => (
+                        <div
+                            key={etapa.idDto}
+                            className="p-4 border rounded-lg shadow-sm flex flex-col bg-gray-50 dark:bg-gray-900 dark:border-gray-700"
+                        >
+                            <span className="font-semibold text-gray-900 dark:text-white">{etapa.nombreEtapaDto}</span>
+                            <span className="text-gray-600 dark:text-gray-400 text-sm">{etapa.descripcionEtapaDto}</span>
+
+                            {/* Botones */}
+                            <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4 mt-2">
+                                <Button
+                                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 text-sm rounded-lg flex items-center gap-2 transition w-full sm:w-auto"
+                                    onClick={() => handleOpenUpdate(etapa)}
+                                >
+                                    <HiEye className="w-4 h-4" /> Ver
                                 </Button>
-                                <Button color="failure" size="xs" onClick={() => handleOpenConfirm(etapa)}>
-                                    <HiXCircle className="w-4 h-4 mr-1" /> Desactivar
+
+                                <Button
+                                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-sm rounded-lg flex items-center gap-2 transition w-full sm:w-auto"
+                                    onClick={() => handleOpenConfirm(etapa)}
+                                >
+                                    <HiXCircle className="w-4 h-4" /> Desactivar
                                 </Button>
                             </div>
+
                         </div>
                     ))}
                 </div>
             )}
 
+            {/* Modales */}
             {selectedEtapa && (
                 <ModalActualizarEtapa
                     open={openUpdate}
@@ -137,21 +154,28 @@ export default function Etapas() {
                 <Modal.Body>
                     <div className="text-center">
                         <HiXCircle className="mx-auto mb-4 w-12 h-12 text-red-600" />
-                        <h3 className="mb-5 text-sm sm:text-lg font-normal text-gray-500 dark:text-gray-400">
-                            ¿Estás seguro de que deseas desactivar la etapa <strong>{selectedEtapa?.nombreEtapaDto}</strong>?
+                        <h3 className="mb-5 text-sm sm:text-lg font-normal text-gray-900 dark:text-white">
+                            ¿Estás seguro de que deseas desactivar la etapa{" "}
+                            <strong>{selectedEtapa?.nombreEtapaDto}</strong>?
                         </h3>
                         <div className="flex flex-col sm:flex-row justify-center gap-4">
-                            <Button color="failure" onClick={handleDesactivarEtapa}>
+                            <Button
+                                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition"
+                                onClick={handleDesactivarEtapa}
+                            >
                                 Sí, desactivar
                             </Button>
-                            <Button color="gray" onClick={() => setOpenConfirm(false)}>
+                            <Button
+                                className="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-black dark:text-white px-4 py-2 rounded-lg transition"
+                                onClick={() => setOpenConfirm(false)}
+                            >
                                 Cancelar
                             </Button>
                         </div>
                     </div>
                 </Modal.Body>
             </Modal>
-
         </div>
     );
+
 }

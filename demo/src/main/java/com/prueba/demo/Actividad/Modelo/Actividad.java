@@ -2,6 +2,7 @@ package com.prueba.demo.Actividad.Modelo;
 
 import com.prueba.demo.Estado.Modelo.Estado;
 import com.prueba.demo.Etapa.Modelo.Etapa;
+import com.prueba.demo.EtapaProyecto.Modelo.EtapaProyecto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,7 +26,8 @@ public class Actividad {
     @JoinColumn(name = "id_estado")
     private Estado estado;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_etapa")
-    private Etapa etapa;
+    @JoinColumn(name = "id_etapa_proyecto")
+    private EtapaProyecto etapaProyecto;
+
 
 }

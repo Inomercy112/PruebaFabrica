@@ -68,7 +68,7 @@ public class ServicioProyecto {
     }
 
     public List<UsuarioDTO> buscarProyectoPorUsuario(int idUsuario) {
-        return repositorioUsuarioProyecto.findByUsuario_Id(idUsuario)
+        return repositorioUsuarioProyecto.findByProyecto_id(idUsuario)
                 .stream()
                 .map(this :: convertirAUsuarioDTO)
                 .toList();
@@ -78,7 +78,8 @@ public class ServicioProyecto {
         UsuarioDTO dto = new UsuarioDTO();
         dto.setIdDto(usuarioProyecto.getUsuario().getId());
         dto.setNombreDto(usuarioProyecto.getUsuario().getNombre());
-        // Agrega otros campos necesarios
+        dto.setApellidoDto(usuarioProyecto.getUsuario().getApellido());
+
         return dto;
     }
 

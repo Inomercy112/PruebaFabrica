@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface RepositorioUsuarioProyecto extends JpaRepository<UsuarioProyecto, Long> {
-    UsuarioProyecto findByIdProyecto(int nombre);
-    List<UsuarioProyecto> findByUsuario_Id(int idUsuario);
+public interface RepositorioUsuarioProyecto extends JpaRepository<UsuarioProyecto, Integer> {
+    UsuarioProyecto findByProyecto_IdAndUsuario_Id(int idProyecto, int idDesarrollador);
+
+    List<UsuarioProyecto> findByProyecto_id(int proyectoId);
+
 }
