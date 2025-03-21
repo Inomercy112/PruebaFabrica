@@ -85,8 +85,8 @@ id smallint unsigned auto_increment primary key,
 nombre_actividad varchar(255) not null,
 descripcion_actividad varchar(255) not null,
 id_estado tinyint unsigned not null,
-id_etapa smallint unsigned not null,
-foreign key (id_etapa)references etapa(id), 
+id_etapa_proyecto smallint unsigned not null,
+foreign key (id_etapa_proyecto)references etapa_proyecto(id), 
 foreign key (id_estado) references estado(id));
 
 
@@ -134,12 +134,15 @@ foreign key (id_usuario_actividad)references usuario_actividad(id),
 foreign key(id_tipo_error) references tipo_error(id)
 );
 
+create table tipo_interrupcion(id smallint unsigned auto_increment primary key,
+nombre_tipo_interrupcion varchar(255) not null);
+
 create table interrupcion(id tinyint unsigned auto_increment primary key,
-tipo varchar(255)not null,
+id_tipo_interrupcion smallint unsigned not null,
 id_usuario_actividad tinyint unsigned not null,
 fecha date not null, 
-hora time not null,
 duracion varchar(255) not null, 
-foreign key (id_actividad) references usuario_actividad(id));
+foreign key (id_actividad) references usuario_actividad(id),
+foreign key(id_tipo_interrupcion) references tipo_interrupcion(id));
 
 
