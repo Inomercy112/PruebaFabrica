@@ -1,7 +1,8 @@
-import { Button, Modal } from "flowbite-react";
-import { useEffect, useState } from "react";
-import { HiEye, HiPlus } from "react-icons/hi";
+import { Button } from "flowbite-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { FaRegFilePdf } from "react-icons/fa";
+import { HiEye, HiPlus } from "react-icons/hi";
 import ModalProyecto from "./ModalProyecto";
 import ModalActualizarProyecto from "./ModalProyectoActualizar";
 
@@ -16,9 +17,9 @@ interface Proyecto {
     };
     diaInicioDto: string;
     diaFinDto: string;
-    tipoProyectoDto:{
-        idDto:number;
-        nombreTipoProyectoDto:string;
+    tipoProyectoDto: {
+        idDto: number;
+        nombreTipoProyectoDto: string;
     }
 }
 
@@ -47,8 +48,30 @@ export default function Proyectos() {
     };
 
     const handleVerProyecto = (proyecto: Proyecto) => {
-        router.push(`/proyecto/${proyecto.idDto}`); // Redirige a la página de detalles
+        router.push(`?vista=proyecto&id=${proyecto.idDto}`, { scroll: false });
     };
+
+    const handleDescargarPDF = async (idProyecto: number) => {
+        try {
+            const response = await fetch(`http://localhost:8080/reportes/pdf/proyecto/${idProyecto}`);
+            if (!response.ok) throw new Error("Error al generar el PDF");
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `reporte_proyecto_${idProyecto}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error al descargar el PDF:", error);
+            alert("No se pudo descargar el reporte PDF");
+        }
+    };
+
+
 
     const proyectosFiltrados = proyectos.filter((proyecto) =>
         proyecto.nombreDto.toLowerCase().includes(search.toLowerCase())
@@ -56,7 +79,7 @@ export default function Proyectos() {
 
     return (
         <div className="w-full h-full p-4 sm:p-6 rounded-lg shadow bg-white dark:bg-gray-800"
->
+        >
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Proyectos</h2>
                 <button
@@ -66,6 +89,7 @@ export default function Proyectos() {
                     <HiPlus className="text-xl" />
                     <span className="hidden sm:inline">Nuevo</span>
                 </button>
+
             </div>
 
             <div className="flex justify-center sm:justify-start">
@@ -100,6 +124,11 @@ export default function Proyectos() {
                                 <Button color="info" size="xs" onClick={() => handleOpenUpdate(proyecto)}>
                                     <HiEye className="w-4 h-4 mr-1" /> Datos del proyecto
                                 </Button>
+                                <Button color="success" size="xs" onClick={() => handleDescargarPDF(proyecto.idDto)}>
+                                    <FaRegFilePdf /> Generar Reporte
+
+                                </Button>
+
                             </div>
                         </div>
                     ))}

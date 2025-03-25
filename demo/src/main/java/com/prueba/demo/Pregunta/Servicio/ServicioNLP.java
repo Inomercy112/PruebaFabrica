@@ -19,7 +19,7 @@ public class ServicioNLP {
             "son", "ser", "fue", "fueron", "era", "eran", "ha", "han", "haber"
     );
 
-    public double calcularSimiliutd(String pregunta1, String pregunta2){
+    public double calcularSimiliutd(String pregunta1, String pregunta2) {
         List<String> tokens1 = tokenizar(pregunta1);
         List<String> tokens2 = tokenizar(pregunta2);
 
@@ -33,10 +33,10 @@ public class ServicioNLP {
     }
 
 
-    private List<String> tokenizar(String pregunta){
+    private List<String> tokenizar(String pregunta) {
         SimpleTokenizer tokenizer = SimpleTokenizer.INSTANCE;
         SpanishStemmer stemmer = new SpanishStemmer();
-        return  Arrays.stream(tokenizer.tokenize(pregunta.toLowerCase()
+        return Arrays.stream(tokenizer.tokenize(pregunta.toLowerCase()
                         .replaceAll("[^a-zA-Z0-9áéíóúüñ ]", "")
                         .trim())).filter(token -> !STOPWORDS.contains(token))
                 .map(token -> {

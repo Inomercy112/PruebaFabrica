@@ -6,10 +6,10 @@ import com.prueba.demo.UsuarioProyecto.DTO.UsuarioProyectoDTO;
 import com.prueba.demo.UsuarioProyecto.Modelo.UsuarioProyecto;
 import com.prueba.demo.UsuarioProyecto.Service.ServicioUsuarioProyecto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuarioProyecto")
@@ -28,11 +28,25 @@ public class ControladorUsuarioProyecto {
             proyectoDTO.setIdDto(idProyecto);
             usuarioProyectoDTO.setIdUsuarioDto(usuarioDTO);
             usuarioProyectoDTO.setIdProyectoDto(proyectoDTO);
-            servicioUsuarioProyecto.guardarUsuarioProyecto(usuarioProyectoDTO);
-            return ResponseEntity.ok().build();
+            ResponseEntity<?> response = servicioUsuarioProyecto.guardarUsuarioProyecto(usuarioProyectoDTO);
+            if (response.getBody() == "Usuario ya existe"){
+                return ResponseEntity.badRequest().body("Usuario ya existe");
+            }else {
+                return ResponseEntity.ok(response.getBody());
+            }
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
 
+        }
+    }
+
+    @GetMapping("/Consultar/UsuarioProyecto/{id}")
+    public ResponseEntity<?> consultarUsuarioProyecto(@PathVariable int id) {
+        try {
+            List<UsuarioProyectoDTO> usuarioDTOList = servicioUsuarioProyecto.traerUsuarioProyectoDTO(id);
+            return ResponseEntity.ok().body(usuarioDTOList);
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

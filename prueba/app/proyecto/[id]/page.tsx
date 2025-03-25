@@ -1,16 +1,14 @@
 "use client";
+import { Button, Modal, Spinner } from "flowbite-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { HiArrowLeft, HiXCircle, HiUserAdd, HiEye } from "react-icons/hi";
-import { Button, Modal } from "flowbite-react";
-import DashboardSidebar from "@/app/DashBoard/DashboardSidebar";
-import { MyFooter } from "@/app/sobreNosotros/footer";
+import { HiArrowLeft, HiEye, HiUserAdd, HiXCircle } from "react-icons/hi";
 
-import ModalVerEtapas from "@/app/DashBoard/ModalEtapaProyecto";
-import ModalRegistrarActividad from "@/app/DashBoard/ModalRegistrarActividad";
-import ModalAsignarUsuario from "@/app/DashBoard/ModalAsignarUsuario";
 import ModalAsignarActividad from "@/app/DashBoard/ModalAsignarActividadEtapa";
 import ModalAsignarEtapa from "@/app/DashBoard/ModalAsignarEtapa";
+import ModalAsignarUsuario from "@/app/DashBoard/ModalAsignarUsuario";
+import ModalVerEtapas from "@/app/DashBoard/ModalEtapaProyecto";
+import ModalRegistrarActividad from "@/app/DashBoard/ModalRegistrarActividad";
 
 interface Proyecto {
     idDto: number;
@@ -55,8 +53,7 @@ interface User {
     };
 }
 
-export default function ProyectoDetalle() {
-    const { id } = useParams();
+export default function ProyectoDetalle({ id }: { id: string }) {
     const projectId = Number(id);
     const router = useRouter();
 
@@ -155,11 +152,6 @@ export default function ProyectoDetalle() {
         }
     }, []);
 
-    const handleLogout = () => {
-        localStorage.removeItem("user");
-        router.push("/sobreNosotros");
-    };
-
     const handleOpenAssignActividad = async () => {
         await cargarEtapasProyecto();
         setOpenAssignActividad(true);
@@ -178,13 +170,21 @@ export default function ProyectoDetalle() {
         cargarUsuarios();
     };
 
-    if (!proyecto) return <p className="text-center text-red-500">No se encontró el proyecto.</p>;
+
+
+    if (!proyecto) {
+        return (
+            <div className="flex justify-center items-center h-40">
+                <Spinner color="info" size="lg" />
+            </div>
+        );
+    }
+
 
 
     return (
         <div className="flex flex-col min-h-screen">
             <div className="flex bg-gray-100 dark:bg-gray-900">
-                <DashboardSidebar user={user} handleLogout={handleLogout} />
 
                 <div className="flex flex-col flex-1">
                     <main className="flex-1 p-6">
@@ -255,8 +255,6 @@ export default function ProyectoDetalle() {
 
                         </div>
                     </main>
-
-                    <MyFooter />
                 </div>
 
                 <Modal show={openConfirm} onClose={() => setOpenConfirm(false)}>

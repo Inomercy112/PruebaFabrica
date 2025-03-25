@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "flowbite-react";
 import ModalRegistroError from "./ModalRegistroError";
+import ModalRegistroInterrupcion from "./ModalRegistroInterrupcion";
 
 
 interface Usuario {
@@ -58,6 +59,7 @@ interface ActividadUsuario {
 export default function ActividadUsuarioPage() {
     const [user, setUser] = useState<Usuario | null>(null);
     const [openErrorModal, setOpenErrorModal] = useState(false);
+    const [openInterrupcionModal, setOpenInterrupcionModal] = useState(false);
     const [actividadSeleccionada, setActividadSeleccionada] = useState<Actividad | null>(null);
     const [actividadesUsuario, setActividadesUsuario] = useState<ActividadUsuario[]>([]);
     const [loading, setLoading] = useState(true);
@@ -113,32 +115,37 @@ export default function ActividadUsuarioPage() {
         setActividadSeleccionada(actividad);
         setOpenErrorModal(true);
     };
+    const handleOpenInterrupcionModal = (actividad: Actividad) => {
+        if (!actividad) return;
+        setActividadSeleccionada(actividad);
+        setOpenInterrupcionModal(true);
+    };
 
     const handleUpdateEjecucion = async (actividadUsuario: ActividadUsuario, nuevoEstado: string) => {
         setLoading(true);
-    
+
         // Solo enviar ID y el nuevo estado
         const updatedData = {
             idDto: actividadUsuario.idDto,
             ejecucionDto: nuevoEstado
         };
-    
+
         try {
             const response = await fetch(`http://localhost:8080/actividadUsuario/Actualizar/${actividadUsuario.idDto}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updatedData),
             });
-    
+
             if (!response.ok) throw new Error(`Error al actualizar estado: ${response.status}`);
-    
+
             // Actualizar estado localmente sin recargar todas las actividades
             setActividadesUsuario((prevActividades) =>
                 prevActividades.map((act) =>
                     act.idDto === actividadUsuario.idDto ? { ...act, ejecucionDto: nuevoEstado } : act
                 )
             );
-    
+
         } catch (error) {
             console.error("Error al actualizar ejecución:", error);
             alert("Hubo un problema al actualizar la ejecución.");
@@ -146,7 +153,7 @@ export default function ActividadUsuarioPage() {
             setLoading(false);
         }
     };
-    
+
 
     const filtrarActividades = () => {
         return actividadesUsuario.filter((actividadUsuario) =>
@@ -157,7 +164,7 @@ export default function ActividadUsuarioPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
+        <div className="w-full h-full p-4 sm:p-6 rounded-lg shadow bg-white dark:bg-gray-800">
             <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Actividades Asignadas</h1>
 
@@ -193,7 +200,7 @@ export default function ActividadUsuarioPage() {
                                             <strong className="text-gray-900 dark:text-white">{actividad.nombreActividadDto}:</strong>{" "}
                                             {actividad.descripcionActividadDto}
                                             <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                <strong>Etapa:</strong> {actividad.etapaDto.nombreEtapaDto} - {actividad.etapaDto.descripcionEtapaDto}
+                                                <strong>Etapa:</strong> {actividad.etapaProyectoDTO.etapaDto.nombreEtapaDto} - {actividad.etapaProyectoDTO.etapaDto.descripcionEtapaDto}
                                             </p>
 
                                             {/* Botón para cambiar estado */}
@@ -231,6 +238,13 @@ export default function ActividadUsuarioPage() {
                                             >
                                                 Reportar Error
                                             </Button>
+                                            <Button
+                                                color="failure"
+                                                onClick={() => handleOpenInterrupcionModal(actividad)}
+                                                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg mt-2"
+                                            >
+                                                Reportar Interrupcion
+                                            </Button>
                                         </li>
                                     ))}
                                 </ul>
@@ -247,12 +261,21 @@ export default function ActividadUsuarioPage() {
 
             {/* Modal de error */}
             {actividadSeleccionada && (
-                <ModalRegistroError
-                    open={openErrorModal}
-                    setOpen={setOpenErrorModal}
-                    actividad={actividadSeleccionada}
-                    onErrorRegistrado={() => user && cargarActividades(user.idDto)}
-                />
+                <>
+
+                    <ModalRegistroError
+                        open={openErrorModal}
+                        setOpen={setOpenErrorModal}
+                        actividad={actividadSeleccionada}
+                        onErrorRegistrado={() => user && cargarActividades(user.idDto)}
+                    />
+                    <ModalRegistroInterrupcion
+                        open={openInterrupcionModal}
+                        setOpen={setOpenInterrupcionModal}
+                        actividad={actividadSeleccionada}
+                        onInterrupcionRegistrada={() => user && cargarActividades(user.idDto)}
+                    />
+                </>
             )}
         </div>
     );

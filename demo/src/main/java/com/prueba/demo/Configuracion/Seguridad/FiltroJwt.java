@@ -27,6 +27,7 @@ public class FiltroJwt extends OncePerRequestFilter {
     private final JwUtil jwUtil;
 
     private final ServicioUsuarioMinimal servicioUsuarioMinimal;
+
     public FiltroJwt(JwUtil jwUtil, @Lazy ServicioUsuarioMinimal servicioUsuarioMinimal) {
         this.jwUtil = jwUtil;
         this.servicioUsuarioMinimal = servicioUsuarioMinimal;
@@ -43,7 +44,7 @@ public class FiltroJwt extends OncePerRequestFilter {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwtToken = authorizationHeader.substring(7);
             try {
-                 correo = jwUtil.extraerCorreo(jwtToken);
+                correo = jwUtil.extraerCorreo(jwtToken);
             } catch (Exception e) {
                 throw new ServletException(e.getMessage());
 

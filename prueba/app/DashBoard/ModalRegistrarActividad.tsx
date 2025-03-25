@@ -41,7 +41,7 @@ export default function ModalRegistrarActividad({
 
     useEffect(() => {
         if (open) {
-            fetch(`http://localhost:8080/proyecto/Consultar/UsuarioProyecto/${proyectoId}`)
+            fetch(`http://localhost:8080/usuarioProyecto/Consultar/UsuarioProyecto/${proyectoId}`)
                 .then(res => res.json())
                 .then(data => setUsuarios(data))
                 .catch(error => console.error("Error al obtener usuarios:", error));
@@ -76,10 +76,7 @@ export default function ModalRegistrarActividad({
 
         const actividadUsuarioDTO = {
             idDesarrolladorDto: {
-                idUsuarioDto: { idDto: selectedUsuario },
-                idProyectoDto:{
-                    idDto:proyectoId
-                }
+                idDto: selectedUsuario
             },
             idActividadEtapaDto: selectedActividades.map(id => ({ idDto: id }))
         };
@@ -116,7 +113,7 @@ export default function ModalRegistrarActividad({
                         <option value="">Seleccione un usuario</option>
                         {usuarios.map((usuario) => (
                             <option key={usuario.idDto} value={usuario.idDto}>
-                                {usuario.nombreDto} {usuario.apellidoDto}
+                                {usuario.idUsuarioDto.nombreDto} {usuario.idUsuarioDto.apellidoDto}
                             </option>
                         ))}
                     </select>

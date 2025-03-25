@@ -28,12 +28,11 @@ export default function ModalAsignarUsuario({
 }: ModalAsignarUsuarioProps) {
     const [selectedUsuario, setSelectedUsuario] = useState<number | null>(null);
 
-    // Filtrar solo los usuarios con rol 2 o 3
     const usuariosFiltrados = usuarios.filter(user => user.rolDto.idDto === 2 || user.rolDto.idDto === 3);
 
     const handleAssignWorker = async () => {
         if (!selectedProyectoId || selectedUsuario === null) {
-            alert("Seleccione un usuario válido.");
+            alert("⚠️ Seleccione un usuario válido.");
             return;
         }
 
@@ -42,20 +41,25 @@ export default function ModalAsignarUsuario({
                 `http://localhost:8080/usuarioProyecto/Registrar/${selectedProyectoId}/${selectedUsuario}`,
                 {
                     method: "PUT",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json" }
                 }
             );
 
-            if (!response.ok) throw new Error(`Error al asignar usuario: ${response.status}`);
+            const message = await response.text();
 
-            alert("Usuario asignado correctamente");
+            if (!response.ok) {
+                throw new Error(message);
+            }
+
+            alert(`✅ ${message}`);
             setOpen(false);
             onUsuarioAsignado();
         } catch (error) {
-            console.error("Error al asignar usuario:", error);
-            alert("Hubo un error al asignar el usuario.");
+            console.error(" Error al asignar usuario:", error);
+            alert(` ${error.message}`);
         }
     };
+
 
     return (
         <Modal show={open} onClose={() => setOpen(false)}>

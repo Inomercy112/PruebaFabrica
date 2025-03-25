@@ -1,6 +1,6 @@
 import { Button, DarkThemeToggle, Sidebar } from "flowbite-react";
-import { HiUsers, HiOutlineFolder, HiOutlineClipboardList, HiOutlineLogout } from "react-icons/hi";
 import { useRouter, useSearchParams } from "next/navigation";
+import { HiOutlineClipboardList, HiOutlineFolder, HiOutlineLogout, HiUsers } from "react-icons/hi";
 
 export default function DashboardSidebar({ user, handleLogout }) {
     const router = useRouter();
@@ -33,9 +33,8 @@ export default function DashboardSidebar({ user, handleLogout }) {
                     {user?.rolDto.idDto === 1 && (
                         <Button
                             onClick={() => cambiarVista("usuarios")}
-                            className={`w-full flex items-center gap-2 p-3 hover:bg-gray-700 ${
-                                currentVista === "usuarios" ? "bg-gray-700" : ""
-                            }`}
+                            className={`w-full flex items-center gap-2 p-3 hover:bg-gray-700 ${currentVista === "usuarios" ? "bg-gray-700" : ""
+                                }`}
                         >
                             <HiUsers className="text-lg" /> Usuarios
                         </Button>
@@ -45,18 +44,16 @@ export default function DashboardSidebar({ user, handleLogout }) {
                         <>
                             <Button
                                 onClick={() => cambiarVista("proyectos")}
-                                className={`w-full flex items-center gap-2 p-3 hover:bg-gray-700 ${
-                                    currentVista === "proyectos" ? "bg-gray-700" : ""
-                                }`}
+                                className={`w-full flex items-center gap-2 p-3 hover:bg-gray-700 ${currentVista === "proyectos" ? "bg-gray-700" : ""
+                                    }`}
                             >
                                 <HiOutlineFolder className="text-lg" /> Proyectos
                             </Button>
 
                             <Button
                                 onClick={() => cambiarVista("etapas")}
-                                className={`w-full flex items-center gap-2 p-3 hover:bg-gray-700 ${
-                                    currentVista === "etapas" ? "bg-gray-700" : ""
-                                }`}
+                                className={`w-full flex items-center gap-2 p-3 hover:bg-gray-700 ${currentVista === "etapas" ? "bg-gray-700" : ""
+                                    }`}
                             >
                                 <HiOutlineClipboardList className="text-lg" /> Etapas
                             </Button>
@@ -66,9 +63,8 @@ export default function DashboardSidebar({ user, handleLogout }) {
                     {(user?.rolDto.idDto === 2 || user?.rolDto.idDto === 3) && (
                         <Button
                             onClick={() => cambiarVista("actividad")}
-                            className={`w-full flex items-center gap-2 p-3 hover:bg-gray-700 ${
-                                currentVista === "actividad" ? "bg-gray-700" : ""
-                            }`}
+                            className={`w-full flex items-center gap-2 p-3 hover:bg-gray-700 ${currentVista === "actividad" ? "bg-gray-700" : ""
+                                }`}
                         >
                             <HiOutlineClipboardList className="text-lg" /> Actividades
                         </Button>

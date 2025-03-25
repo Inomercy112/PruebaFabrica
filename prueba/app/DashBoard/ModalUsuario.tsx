@@ -4,9 +4,10 @@ import { useState } from "react";
 interface UsuarioFormProps {
     open: boolean;
     setOpen: (open: boolean) => void;
+    onSuccess: () => void; // Nueva prop para actualizar datos
 }
 
-export default function ModalUsuario({ open, setOpen }: UsuarioFormProps) {
+export default function ModalUsuario({ open, setOpen, onSuccess }: UsuarioFormProps) {
     const [usuario, setUsuario] = useState({
         nombreDto: "",
         apellidoDto: "",
@@ -66,7 +67,8 @@ export default function ModalUsuario({ open, setOpen }: UsuarioFormProps) {
 
             alert("Usuario creado correctamente");
             setOpen(false);
-            
+            onSuccess();
+
         } catch (error) {
             console.error("Error al crear el usuario:", error);
             alert("Hubo un error al enviar los datos.");

@@ -11,25 +11,28 @@ import java.util.List;
 @RequestMapping("/pregunta")
 public class ControladorPregunta {
     private final ServicioPregunta servicioPregunta;
+
     public ControladorPregunta(ServicioPregunta servicioPregunta) {
         this.servicioPregunta = servicioPregunta;
     }
+
     @PostMapping("/Guardar")
     public ResponseEntity<?> guardarPregunta(@RequestBody PreguntaDTO preguntaDTO) {
         try {
             servicioPregunta.registrarPregunta(preguntaDTO);
             return ResponseEntity.ok("registrado correctamente");
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @GetMapping("/Consultar")
     public ResponseEntity<?> consultarPregunta() {
-        try{
+        try {
             List<PreguntaDTO> preguntaDTOList = servicioPregunta.obtenerPreguntas();
             return ResponseEntity.ok(preguntaDTOList);
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

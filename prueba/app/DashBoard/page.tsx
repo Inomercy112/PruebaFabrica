@@ -1,12 +1,13 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import DashboardSidebar from "./DashboardSidebar";
+import ProyectoDetalle from "../proyecto/[id]/page";
 import { MyFooter } from "../sobreNosotros/footer";
+import ActividadUsuarioPage from "./Actividad";
+import DashboardSidebar from "./DashboardSidebar";
 import Etapas from "./Etapas";
 import Proyectos from "./Proyectos";
 import Usuarios from "./Usuarios";
-import ActividadUsuarioPage from "./Actividad";
 
 interface Usuario {
     idDto: number;
@@ -23,6 +24,7 @@ export default function Dashboard() {
     const router = useRouter();
     const [vista, setVista] = useState(searchParams.get("vista") || "usuarios");
     const [user, setUser] = useState<Usuario | null>(null);
+    const proyectoId = searchParams.get("id");
 
     useEffect(() => {
         setVista(searchParams.get("vista") || "proyectos");
@@ -48,11 +50,16 @@ export default function Dashboard() {
                 <DashboardSidebar user={user} handleLogout={handleLogout} />
 
                 <main className="flex-1 p-6 overflow-auto">
-                    {vista === "usuarios" && user?.rolDto.idDto === 1 && <Usuarios />}
-                    {vista === "etapas" && (user?.rolDto.idDto === 2 || user?.rolDto.idDto === 1) && <Etapas />}
-                    {vista === "proyectos" && (user?.rolDto.idDto === 2 || user?.rolDto.idDto === 1) && <Proyectos />}
-                    {vista === "actividad" && (user?.rolDto.idDto === 3 || user?.rolDto.idDto === 2) && <ActividadUsuarioPage />}
-
+                    {proyectoId ? (
+                        <ProyectoDetalle id={proyectoId} />
+                    ) : (
+                        <>
+                            {vista === "usuarios" && user?.rolDto.idDto === 1 && <Usuarios />}
+                            {vista === "etapas" && (user?.rolDto.idDto === 2 || user?.rolDto.idDto === 1) && <Etapas />}
+                            {vista === "proyectos" && (user?.rolDto.idDto === 2 || user?.rolDto.idDto === 1) && <Proyectos />}
+                            {vista === "actividad" && (user?.rolDto.idDto === 3 || user?.rolDto.idDto === 2) && <ActividadUsuarioPage />}
+                        </>
+                    )}
                 </main>
             </div>
             <MyFooter />

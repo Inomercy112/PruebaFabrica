@@ -1,5 +1,5 @@
 import { Button, Modal } from "flowbite-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface Etapa {
     idDto: number;
@@ -23,20 +23,13 @@ export default function ModalAsignarActividad({
     onActividadAsignada,
 }: ModalAsignarActividadProps) {
     const [selectedEtapa, setSelectedEtapa] = useState<number | null>(null);
-    console.log(etapas);
-    const idRelacion = etapas.length > 0 ? etapas[0].idDto : null;
-    console.log(idRelacion);
-    
-    console.log(idRelacion);
+    console.log(etapas)
     const [formData, setFormData] = useState({
         nombreActividadDto: "",
         descripcionActividadDto: "",
-        estadoActividadDto: "1", 
+        estadoActividadDto: "1",
         etapaProyectoDTO: {
-            idDto: idRelacion,
-            etapaDto: {
-                idDto: ""
-            }
+            idDto: selectedEtapa,
         }
     });
 
@@ -56,12 +49,10 @@ export default function ModalAsignarActividad({
             descripcionActividadDto: formData.descripcionActividadDto,
             estadoActividadDto: formData.estadoActividadDto,
             etapaProyectoDTO: {
-                idDto: idRelacion,
-                etapaDto: {
-                    idDto: selectedEtapa
-                }
+                idDto: selectedEtapa
             }
         };
+
 
         try {
             console.log(actividadDTO)
@@ -76,15 +67,12 @@ export default function ModalAsignarActividad({
             alert("Actividad asignada correctamente");
             setOpen(false);
             onActividadAsignada();
-            setFormData({ 
-                nombreActividadDto: "", 
-                descripcionActividadDto: "", 
-                estadoActividadDto: "1", 
+            setFormData({
+                nombreActividadDto: "",
+                descripcionActividadDto: "",
+                estadoActividadDto: "1",
                 etapaProyectoDTO: {
-                    idDto: idRelacion,
-                    etapaDto: {
-                        idDto: ""
-                    }
+                    idDto: selectedEtapa,
                 }
             });
         } catch (error) {
@@ -100,13 +88,14 @@ export default function ModalAsignarActividad({
                 <div className="space-y-4">
                     <label className="block text-sm font-medium dark:text-white">Seleccione una Etapa</label>
                     <select
+                        title="etapas"
                         className="w-full px-4 py-2 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                         value={selectedEtapa ?? ""}
                         onChange={(e) => setSelectedEtapa(Number(e.target.value))}
                     >
                         <option value="">Seleccione una etapa</option>
                         {etapas.map((etapa) => (
-                            <option key={etapa.etapaDto.idDto} value={etapa.etapaDto.idDto}>
+                            <option key={etapa.idDto} value={etapa.idDto}>
                                 {etapa.etapaDto.nombreEtapaDto}
                             </option>
                         ))}

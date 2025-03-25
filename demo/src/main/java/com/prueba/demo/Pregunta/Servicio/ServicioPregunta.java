@@ -22,29 +22,30 @@ public class ServicioPregunta {
         List<Pregunta> todasPreguntas = repositorioPregunta.findAll();
         for (Pregunta pregunta : todasPreguntas) {
             double similitud = servicioNLP.calcularSimiliutd(preguntaDTO.getPreguntaDto(), pregunta.getPregunta());
-            if (similitud >= 0.50){
+            if (similitud >= 0.50) {
                 pregunta.setConteo(pregunta.getConteo() + 1);
                 repositorioPregunta.save(pregunta);
                 return;
             }
         }
         Pregunta pregunta = new Pregunta();
-        preguntaDTOToEntity(pregunta,preguntaDTO);
+        preguntaDTOToEntity(pregunta, preguntaDTO);
         pregunta.setConteo(1);
         repositorioPregunta.save(pregunta);
     }
 
-    public List <PreguntaDTO> obtenerPreguntas() {
+    public List<PreguntaDTO> obtenerPreguntas() {
         return repositorioPregunta.findAll().stream().map(this::preguntaEntityToDTO).toList();
     }
 
 
-    private void preguntaDTOToEntity(Pregunta pregunta,PreguntaDTO preguntaDTO) {
+    private void preguntaDTOToEntity(Pregunta pregunta, PreguntaDTO preguntaDTO) {
 
         pregunta.setPregunta(preguntaDTO.getPreguntaDto());
         pregunta.setConteo(preguntaDTO.getConteoDto());
 
     }
+
     private PreguntaDTO preguntaEntityToDTO(Pregunta pregunta) {
         PreguntaDTO preguntaDTO = new PreguntaDTO();
         preguntaDTO.setIdDto(pregunta.getId());

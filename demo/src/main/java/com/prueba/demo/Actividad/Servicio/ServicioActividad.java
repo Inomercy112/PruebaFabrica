@@ -6,7 +6,6 @@ import com.prueba.demo.Actividad.Repositorio.RepositorioActividad;
 import com.prueba.demo.Estado.Modelo.Estado;
 import com.prueba.demo.Estado.Repositorio.RepositorioEstado;
 import com.prueba.demo.Etapa.DTO.EtapaDTO;
-import com.prueba.demo.Etapa.Modelo.Etapa;
 import com.prueba.demo.Etapa.Repositorio.RepositorioEtapa;
 import com.prueba.demo.EtapaProyecto.DTO.EtapaProyectoDTO;
 import com.prueba.demo.EtapaProyecto.Modelo.EtapaProyecto;
@@ -32,22 +31,23 @@ public class ServicioActividad {
     }
 
     public void crearActividad(ActividadDTO actividadDTO) {
-        Optional <Actividad> actividadOptional = repositorioActividad.findById(actividadDTO.getIdDto());
+        Optional<Actividad> actividadOptional = repositorioActividad.findById(actividadDTO.getIdDto());
         Estado estado = repositorioEstado.findById(actividadDTO.getEstadoActividadDto());
-        EtapaProyecto etapaProyecto = repositorioEtapaProyecto.findByIdAndEtapa_Id(actividadDTO.getEtapaProyectoDTO().getIdDto(), actividadDTO.getEtapaProyectoDTO().getEtapaDto().getIdDto());
+        EtapaProyecto etapaProyecto = repositorioEtapaProyecto.findById(actividadDTO.getEtapaProyectoDTO().getIdDto());
         Actividad actividad;
-        if(actividadOptional.isPresent()) {
+        if (actividadOptional.isPresent()) {
             actividad = actividadOptional.get();
-            actividadDTOToEntity(actividadDTO, actividad, estado,etapaProyecto );
-        }else {
+            actividadDTOToEntity(actividadDTO, actividad, estado, etapaProyecto);
+        } else {
             actividad = new Actividad();
             actividadDTOToEntity(actividadDTO, actividad, estado, etapaProyecto);
         }
         repositorioActividad.save(actividad);
 
     }
+
     public List<ActividadDTO> listarActividades() {
-        return repositorioActividad.findAll().stream().map(this ::actividadentityToDTO).toList();
+        return repositorioActividad.findAll().stream().map(this::actividadentityToDTO).toList();
     }
 
     private void actividadDTOToEntity(ActividadDTO actividadDTO, Actividad actividad, Estado estado, EtapaProyecto etapaProyecto) {
@@ -58,6 +58,7 @@ public class ServicioActividad {
         actividad.setDescripcionActividad(actividadDTO.getDescripcionActividadDto());
 
     }
+
     private ActividadDTO actividadentityToDTO(Actividad actividad) {
         ActividadDTO actividadDTO = new ActividadDTO();
 

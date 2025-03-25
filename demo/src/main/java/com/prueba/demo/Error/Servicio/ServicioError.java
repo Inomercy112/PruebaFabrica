@@ -31,7 +31,7 @@ public class ServicioError {
         ErrorEntity errorEntity = new ErrorEntity();
         ActividadUsuario actividadUsuario = actividadUsuarioRepository.findById(errorDTO.getActividadUsuarioDTO().getIdActividadEtapaDto().get(0).getIdDto()).orElse(null);
         TipoError tipoError = repositorioTipoError.findById(errorDTO.getTipoErrorDTO().getIdDto()).orElse(null);
-        errorDTOToEntity(errorDTO, errorEntity,actividadUsuario,tipoError);
+        errorDTOToEntity(errorDTO, errorEntity, actividadUsuario, tipoError);
         repositorioError.save(errorEntity);
     }
 
@@ -41,6 +41,7 @@ public class ServicioError {
         errorEntity.setTipoError(tipoError);
 
     }
+
     public ErrorDTO.TipoErrorDTO tipoErrorEntityToDTO(TipoError tipoError) {
         ErrorDTO.TipoErrorDTO tipoErrorDTO = new ErrorDTO.TipoErrorDTO();
         tipoErrorDTO.setIdDto(tipoError.getId());

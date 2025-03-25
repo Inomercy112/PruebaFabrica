@@ -1,10 +1,10 @@
 package com.prueba.demo.Usuario.Servicio;
 
-import com.prueba.demo.Usuario.DTO.UsuarioDTO;
 import com.prueba.demo.Estado.Modelo.Estado;
+import com.prueba.demo.Estado.Repositorio.RepositorioEstado;
+import com.prueba.demo.Usuario.DTO.UsuarioDTO;
 import com.prueba.demo.Usuario.Modelo.Rol;
 import com.prueba.demo.Usuario.Modelo.Usuario;
-import com.prueba.demo.Estado.Repositorio.RepositorioEstado;
 import com.prueba.demo.Usuario.Repositorio.RepositorioRol;
 import com.prueba.demo.Usuario.Repositorio.RepositorioUsuario;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,18 +16,18 @@ import java.util.Optional;
 @Service
 public class ServicioUsuario implements ServicioUsuarioMinimal {
     private final RepositorioUsuario repositorioUsuario;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder ;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final RepositorioRol repositorioRol;
     private final RepositorioEstado repositorioEstado;
 
-    public ServicioUsuario (RepositorioEstado repositorioEstado,RepositorioUsuario repositorioUsuario, BCryptPasswordEncoder bCryptPasswordEncoder, RepositorioRol repositorioRol){
+    public ServicioUsuario(RepositorioEstado repositorioEstado, RepositorioUsuario repositorioUsuario, BCryptPasswordEncoder bCryptPasswordEncoder, RepositorioRol repositorioRol) {
         this.repositorioUsuario = repositorioUsuario;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.repositorioRol = repositorioRol;
         this.repositorioEstado = repositorioEstado;
     }
 
-    public void registroUsuario(UsuarioDTO usuarioDTO){
+    public void registroUsuario(UsuarioDTO usuarioDTO) {
 
         Rol rol = repositorioRol.findById(usuarioDTO.getRolDto().getIdDto());
         Estado estado = repositorioEstado.findById(usuarioDTO.getEstadoDto());
@@ -35,32 +35,33 @@ public class ServicioUsuario implements ServicioUsuarioMinimal {
         usuarioDTO.setContrasenaDto(contrasenaEncriptada);
         Optional<Usuario> usuarioOptional = repositorioUsuario.findById(usuarioDTO.getIdDto());
         Usuario usuario;
-        if(usuarioOptional.isPresent()){
+        if (usuarioOptional.isPresent()) {
             System.out.println("actualizar");
             usuario = usuarioOptional.get();
-            usuarioDTOToEntity(usuarioDTO,usuario,rol,estado);
-        }
-        else{
+            usuarioDTOToEntity(usuarioDTO, usuario, rol, estado);
+        } else {
             System.out.println("crear");
             usuario = new Usuario();
             usuarioDTOToEntity(usuarioDTO, usuario, rol, estado);
         }
-;
+        ;
         repositorioUsuario.save(usuario);
     }
 
-    public List<UsuarioDTO> consultarUsuarios(){
+    public List<UsuarioDTO> consultarUsuarios() {
         return repositorioUsuario.findAll().stream().map(this::usuarioEntityToDTO).toList();
     }
+
     @Override
-    public Optional<UsuarioDTO> buscarPorCorreo(String correo){
+    public Optional<UsuarioDTO> buscarPorCorreo(String correo) {
         return repositorioUsuario.findByCorreo(correo).map(this::usuarioEntityToDTO);
     }
-    public Optional<UsuarioDTO> buscarPorId(int id){
+
+    public Optional<UsuarioDTO> buscarPorId(int id) {
         return repositorioUsuario.findById(id).map(this::usuarioEntityToDTO);
     }
 
-    public UsuarioDTO usuarioEntityToDTO(Usuario usuario){
+    public UsuarioDTO usuarioEntityToDTO(Usuario usuario) {
         UsuarioDTO usuarioDTO = new UsuarioDTO();
         usuarioDTO.setIdDto(usuario.getId());
         usuarioDTO.setCorreoDto(usuario.getCorreo());
@@ -79,7 +80,7 @@ public class ServicioUsuario implements ServicioUsuarioMinimal {
         return usuarioDTO;
     }
 
-    public void usuarioDTOToEntity(UsuarioDTO usuarioDTO, Usuario usuario, Rol rol, Estado estado){
+    public void usuarioDTOToEntity(UsuarioDTO usuarioDTO, Usuario usuario, Rol rol, Estado estado) {
         usuario.setNombre(usuarioDTO.getNombreDto());
         usuario.setApellido(usuarioDTO.getApellidoDto());
         usuario.setContrasena(usuarioDTO.getContrasenaDto());

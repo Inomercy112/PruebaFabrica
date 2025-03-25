@@ -3,7 +3,6 @@ package com.prueba.demo.Usuario.Controlador;
 import com.prueba.demo.Configuracion.Seguridad.JwUtil;
 import com.prueba.demo.Usuario.DTO.LoginDTO;
 import com.prueba.demo.Usuario.DTO.UsuarioDTO;
-import com.prueba.demo.Usuario.Modelo.Usuario;
 import com.prueba.demo.Usuario.Servicio.ServicioUsuario;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,54 +18,56 @@ public class ControladorUsuario {
     private final JwUtil jwUtil;
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
-    public ControladorUsuario(ServicioUsuario servicioUsuario, JwUtil jwUtil){
+    public ControladorUsuario(ServicioUsuario servicioUsuario, JwUtil jwUtil) {
         this.servicioUsuario = servicioUsuario;
         this.jwUtil = jwUtil;
     }
+
     @PostMapping("/Guardar")
-    public ResponseEntity<?> guardarUsuario(@RequestBody UsuarioDTO usuarioDTO){
+    public ResponseEntity<?> guardarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
         servicioUsuario.registroUsuario(usuarioDTO);
         return ResponseEntity.ok().body("registrado");
     }
+
     @PostMapping("/Login")
-    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO){
+    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
         try {
             Optional<UsuarioDTO> usuarioDTOOptional = servicioUsuario.buscarPorCorreo(loginDTO.getCorreo());
-            if(usuarioDTOOptional.isEmpty()){
+            if (usuarioDTOOptional.isEmpty()) {
                 return ResponseEntity.badRequest().body("no se pudo iniciar sesion");
             }
             UsuarioDTO usuarioDTO = usuarioDTOOptional.get();
             boolean validar = bCryptPasswordEncoder.matches(loginDTO.getContrasena(), usuarioDTO.getContrasenaDto());
-            if(validar){
-                String token = jwUtil.generarToken(usuarioDTO.getCorreoDto(),usuarioDTO.getIdDto(), usuarioDTO.getRolDto().getNombreRol());
+            if (validar) {
+                String token = jwUtil.generarToken(usuarioDTO.getCorreoDto(), usuarioDTO.getIdDto(), usuarioDTO.getRolDto().getNombreRol());
                 usuarioDTO.setToken(token);
                 return ResponseEntity.ok(usuarioDTO);
             }
             return ResponseEntity.badRequest().body("hubo un problema con la token");
 
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e);
         }
     }
+
     @GetMapping("/Consultar")
-    public ResponseEntity<?> consultarUsuario(){
+    public ResponseEntity<?> consultarUsuario() {
         try {
             List<UsuarioDTO> usuarioDTOList = servicioUsuario.consultarUsuarios();
             return ResponseEntity.ok(usuarioDTOList);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e);
         }
     }
 
     @PutMapping("/Actualizar/{id}")
-    public ResponseEntity<?> actualizarUsuario(@PathVariable Integer id, @RequestBody UsuarioDTO usuarioDTO){
+    public ResponseEntity<?> actualizarUsuario(@PathVariable Integer id, @RequestBody UsuarioDTO usuarioDTO) {
         try {
             usuarioDTO.setIdDto(id);
             servicioUsuario.registroUsuario(usuarioDTO);
             return ResponseEntity.ok().body("actualizado");
 
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e);
         }
 

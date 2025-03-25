@@ -49,6 +49,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return usuarioDTO.getEstadoDto()== 1;
+        return usuarioDTO.getEstadoDto() == 1;
     }
 }

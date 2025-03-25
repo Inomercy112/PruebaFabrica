@@ -1,10 +1,10 @@
 package com.prueba.demo.Etapa.Servicio;
 
+import com.prueba.demo.Estado.Modelo.Estado;
+import com.prueba.demo.Estado.Repositorio.RepositorioEstado;
 import com.prueba.demo.Etapa.DTO.EtapaDTO;
 import com.prueba.demo.Etapa.Modelo.Etapa;
 import com.prueba.demo.Etapa.Repositorio.RepositorioEtapa;
-import com.prueba.demo.Estado.Modelo.Estado;
-import com.prueba.demo.Estado.Repositorio.RepositorioEstado;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,10 +25,10 @@ public class ServicioEtapa {
         Estado estado = repositorioEstado.findById(etapaDTO.getEstadoDto());
 
         Etapa etapa;
-        if(etapaOptional.isPresent()) {
+        if (etapaOptional.isPresent()) {
             etapa = etapaOptional.get();
             etapaDTOToEntity(etapaDTO, etapa, estado);
-        }else {
+        } else {
             etapa = new Etapa();
             etapaDTOToEntity(etapaDTO, etapa, estado);
         }
@@ -37,6 +37,7 @@ public class ServicioEtapa {
 
 
     }
+
     public List<EtapaDTO> obtenerEtapas() {
         return repositorioEtapa.findAll().stream().map(this::etapaEntityToDTO).toList();
     }
@@ -48,6 +49,7 @@ public class ServicioEtapa {
 
 
     }
+
     private EtapaDTO etapaEntityToDTO(Etapa etapa) {
         EtapaDTO etapaDTO = new EtapaDTO();
         etapaDTO.setIdDto(etapa.getId());
