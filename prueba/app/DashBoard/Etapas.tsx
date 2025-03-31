@@ -79,6 +79,7 @@ export default function Etapas() {
 
     return (
         <div className="w-full h-full p-4 sm:p-6 rounded-lg shadow bg-white dark:bg-gray-800">
+            <div className="max-w-7xl mx-auto">
             {/* Encabezado */}
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Etapas</h2>
@@ -96,7 +97,7 @@ export default function Etapas() {
                 <input
                     type="text"
                     placeholder="Buscar etapa..."
-                    className="w-full sm:w-1/2 px-4 py-2 mb-4 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                    className="w-full sm:w-96 px-4 py-2 mb-4 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-blue-500"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
@@ -175,6 +176,7 @@ export default function Etapas() {
                     </div>
                 </Modal.Body>
             </Modal>
+            </div>
         </div>
     );
 

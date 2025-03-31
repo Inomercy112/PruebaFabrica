@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: USERS-SERVICE
+  datasource:
+    url: jdbc:mysql://localhost:3306/prueba
+    username: root
+    password: admin
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/preguntas

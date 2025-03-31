@@ -4,6 +4,9 @@ import MyBar from "./navbar";
 export default function Vista() {
     return (
         <div className="flex flex-col min-h-screen">
+            <div className="flex bg-gray-100 dark:bg-gray-900">
+
+
             <MyBar />
 
             <div className="container mx-auto px-4 py-12">
@@ -82,7 +85,7 @@ export default function Vista() {
                     </div>
                 </div>
             </div>
-
+            </div>
             <MyFooter />
         </div>
     );
